@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Административная панель</h1>
+<div class="admin-menu">
+    <a href="{{ url_for('admin.users') }}">Пользователи</a>
+    <a href="{{ url_for('admin.roles') }}">Роли и права</a>
+    <a href="{{ url_for('admin.clients') }}">Клиенты</a>
+    <a href="{{ url_for('admin.employees') }}">Сотрудники</a>
+    <a href="{{ url_for('admin.services') }}">Услуги</a>
+    <a href="{{ url_for('admin.tickets') }}">Заявки</a>
+    <a href="{{ url_for('admin.statuses') }}">Статусы</a>
+    <a href="{{ url_for('admin.articles') }}">Новости и база знаний</a>
+    <a href="{{ url_for('admin.feedback') }}">Обратная связь</a>
+    <a href="{{ url_for('admin.reports') }}">Отчеты</a>
+</div>
+<div class="dashboard-grid">
+    {% for name, value in stats.items() %}<div class="metric"><span>{{ value }}</span><p>{{ name }}</p></div>{% endfor %}
+</div>
+{% endblock %}
