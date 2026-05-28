@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Отчет по выполненным заявкам</h1>
+<div class="actions"><a class="button" href="{{ url_for('specialist.tickets_report') }}">Скачать отчет Excel</a></div>
+<table>
+    <thead><tr><th>№</th><th>Дата</th><th>Клиент</th><th>Услуга</th><th>Статус</th></tr></thead>
+    <tbody>
+    {% for ticket in tickets %}
+        <tr><td>{{ ticket.id }}</td><td>{{ ticket.created_at.strftime('%d.%m.%Y') }}</td><td>{{ ticket.client.organization_name }}</td><td>{{ ticket.service.name }}</td><td>{{ ticket.status.name }}</td></tr>
+    {% else %}
+        <tr><td colspan="5">Выполненных заявок пока нет.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
