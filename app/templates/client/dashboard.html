@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Панель клиента</h1>
+<div class="dashboard-grid">
+    <div class="metric"><span>{{ tickets|length }}</span><p>Всего заявок</p></div>
+    <div class="metric"><span>{{ tickets|selectattr('status.name', 'equalto', 'В работе')|list|length }}</span><p>В работе</p></div>
+    <div class="metric"><span>{{ tickets|selectattr('status.name', 'equalto', 'Выполнена')|list|length }}</span><p>Выполнено</p></div>
+</div>
+<div class="actions"><a class="button" href="{{ url_for('client.create_ticket') }}">Создать заявку</a></div>
+{% include "client/_tickets_table.html" %}
+{% endblock %}
