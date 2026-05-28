@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<h1>Заявки</h1><table><thead><tr><th>№</th><th>Клиент</th><th>Тема</th><th>Услуга</th><th>Статус</th><th>Приоритет</th></tr></thead><tbody>{% for ticket in tickets %}<tr><td>{{ ticket.id }}</td><td>{{ ticket.client.organization_name }}</td><td>{{ ticket.title }}</td><td>{{ ticket.service.name }}</td><td>{{ ticket.status.name }}</td><td>{{ ticket.priority.name }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
