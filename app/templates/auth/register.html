@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Регистрация клиента</h1>
+<form method="post" class="form-card">
+    <label>Логин<input type="text" name="username" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>ФИО контактного лица<input type="text" name="full_name" required></label>
+    <label>Организация<input type="text" name="organization_name" required></label>
+    <label>Пароль<input type="password" name="password" required></label>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+{% endblock %}
