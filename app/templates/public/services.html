@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Услуги</h1>
+<p class="lead">Перечень услуг, которые клиент может выбрать при создании заявки.</p>
+<div class="cards">
+    {% for service in services %}
+    <article class="card">
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+        <p><b>Категория:</b> {{ service.category.name }}</p>
+        <p><b>Стоимость:</b> {{ '%.0f'|format(service.price) }} руб.</p>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}
