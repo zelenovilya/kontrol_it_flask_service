@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+    <div>
+        <h1>Веб-сервис обработки заявок на ИТ-обслуживание</h1>
+        <p>Единая система для регистрации обращений клиентов, назначения специалистов, контроля статусов и формирования документов по выполненным работам.</p>
+        <div class="actions">
+            <a class="button" href="{{ url_for('public.register') }}">Создать кабинет</a>
+            <a class="button secondary" href="{{ url_for('public.services') }}">Посмотреть услуги</a>
+        </div>
+    </div>
+</section>
+
+<h2>Основные услуги</h2>
+<div class="cards">
+    {% for service in services %}
+    <article class="card">
+        <h3>{{ service.name }}</h3>
+        <p>{{ service.description }}</p>
+        <span>{{ '%.0f'|format(service.price) }} руб.</span>
+    </article>
+    {% endfor %}
+</div>
+
+<h2>Новости</h2>
+<div class="cards">
+    {% for item in news %}
+    <article class="card">
+        <h3>{{ item.title }}</h3>
+        <p>{{ item.summary }}</p>
+        <a href="{{ url_for('public.article_detail', slug=item.slug) }}">Подробнее</a>
+    </article>
+    {% endfor %}
+</div>
+{% endblock %}
