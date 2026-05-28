@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<h1>Сотрудники</h1><table><thead><tr><th>ФИО</th><th>Должность</th><th>Подразделение</th><th>Квалификация</th></tr></thead><tbody>{% for employee in employees %}<tr><td>{{ employee.user.full_name }}</td><td>{{ employee.position }}</td><td>{{ employee.department }}</td><td>{{ employee.qualification }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
