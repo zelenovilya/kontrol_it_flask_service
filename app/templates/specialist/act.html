@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Формирование акта по заявке №{{ ticket.id }}</h1>
+<div class="info-box">
+    <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
+    <p><b>Услуга:</b> {{ ticket.service.name }}</p>
+    <p><b>Исполнитель:</b> {{ ticket.specialist.user.full_name if ticket.specialist else current_user.full_name }}</p>
+    <p><b>Статус:</b> {{ ticket.status.name }}</p>
+</div>
+<div class="actions">
+    <a class="button" href="{{ url_for('specialist.generate_act', ticket_id=ticket.id) }}">Скачать акт .docx</a>
+</div>
+{% endblock %}
