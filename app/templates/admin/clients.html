@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<h1>Клиенты</h1><table><thead><tr><th>Организация</th><th>Контакт</th><th>Email</th><th>Телефон</th></tr></thead><tbody>{% for client in clients %}<tr><td>{{ client.organization_name }}</td><td>{{ client.contact_person }}</td><td>{{ client.user.email }}</td><td>{{ client.user.phone }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
