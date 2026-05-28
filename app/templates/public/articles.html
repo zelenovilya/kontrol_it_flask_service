@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<div class="cards">
+    {% for article in articles %}
+    <article class="card">
+        <h3>{{ article.title }}</h3>
+        <p>{{ article.summary }}</p>
+        <a href="{{ url_for('public.article_detail', slug=article.slug) }}">Открыть</a>
+    </article>
+    {% else %}
+    <p>Материалы пока не добавлены.</p>
+    {% endfor %}
+</div>
+{% endblock %}
