@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Обратная связь</h1>
+<form method="post" class="form-card">
+    <label>ФИО или организация<input type="text" name="name" required></label>
+    <label>Email<input type="email" name="email" required></label>
+    <label>Телефон<input type="text" name="phone"></label>
+    <label>Тема<input type="text" name="subject" required></label>
+    <label>Сообщение<textarea name="message" required></textarea></label>
+    <button type="submit">Отправить</button>
+</form>
+{% endblock %}
