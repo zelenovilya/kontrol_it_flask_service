@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Документы</h1>
+<table>
+    <thead><tr><th>Документ</th><th>Заявка</th><th>Дата</th><th>Скачать</th></tr></thead>
+    <tbody>
+    {% for doc in documents %}
+    <tr><td>{{ doc.title }}</td><td>№{{ doc.ticket.id }}</td><td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td><td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td></tr>
+    {% else %}<tr><td colspan="4">Документы отсутствуют.</td></tr>{% endfor %}
+    </tbody>
+</table>
+{% endblock %}
