@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<h1>Отчеты</h1><p class="lead">Сводка по количеству заявок в разрезе статусов.</p><div class="actions"><a class="button" href="{{ url_for('admin.tickets_report') }}">Скачать отчет Excel</a></div><table><thead><tr><th>Статус</th><th>Количество заявок</th></tr></thead><tbody>{% for status, count in tickets_by_status %}<tr><td>{{ status }}</td><td>{{ count }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
