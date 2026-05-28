@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Профиль клиента</h1>
+<div class="info-box">
+    <p><b>Организация:</b> {{ client.organization_name }}</p>
+    <p><b>ИНН:</b> {{ client.inn or 'Не указан' }}</p>
+    <p><b>Контактное лицо:</b> {{ client.contact_person }}</p>
+    <p><b>Email:</b> {{ client.user.email }}</p>
+    <p><b>Телефон:</b> {{ client.user.phone or 'Не указан' }}</p>
+</div>
+{% endblock %}
