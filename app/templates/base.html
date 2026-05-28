@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ title }} | Контроль ИТ</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="site-header">
+    <div class="container header-inner">
+        <a class="logo" href="{{ url_for('public.home') }}">Контроль ИТ</a>
+        <nav class="main-nav">
+            <a href="{{ url_for('public.home') }}">Главная</a>
+            <a href="{{ url_for('public.static_page', page_slug='about') }}">О компании</a>
+            <a href="{{ url_for('public.services') }}">Услуги</a>
+            <a href="{{ url_for('public.static_page', page_slug='tariffs') }}">Тарифы</a>
+            <a href="{{ url_for('public.static_page', page_slug='how-to-create-ticket') }}">Как подать заявку</a>
+            <a href="{{ url_for('public.static_page', page_slug='advantages') }}">Преимущества</a>
+            <a href="{{ url_for('public.static_page', page_slug='faq') }}">Вопросы</a>
+            <a href="{{ url_for('public.knowledge_base') }}">База знаний</a>
+            <a href="{{ url_for('public.news') }}">Новости</a>
+            <a href="{{ url_for('public.static_page', page_slug='contacts') }}">Контакты</a>
+            <a href="{{ url_for('public.feedback') }}">Обратная связь</a>
+        </nav>
+        <div class="auth-panel">
+            {% if current_user.is_authenticated %}
+                {% if current_user.has_role('Администратор') %}<a href="{{ url_for('admin.dashboard') }}">Админ-панель</a>{% endif %}
+                {% if current_user.has_role('Специалист') %}<a href="{{ url_for('specialist.dashboard') }}">Кабинет специалиста</a>{% endif %}
+                {% if current_user.has_role('Клиент') %}<a href="{{ url_for('client.dashboard') }}">Кабинет клиента</a>{% endif %}
+                <a href="{{ url_for('public.logout') }}">Выйти</a>
+            {% else %}
+                <a href="{{ url_for('public.login') }}">Вход</a>
+                <a href="{{ url_for('public.register') }}">Регистрация</a>
+            {% endif %}
+        </div>
+    </div>
+</header>
+
+<main class="container page">
+    <div class="breadcrumbs">
+        <a href="{{ url_for('public.home') }}">Главная</a> / <span>{{ title }}</span>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>Веб-сервис учета и обработки заявок на ИТ-обслуживание ООО «Контроль ИТ».</p>
+        <p>Автор работы: Зеленов Илья Денисович.</p>
+    </div>
+</footer>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
