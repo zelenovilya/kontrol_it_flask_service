@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Заявка №{{ ticket.id }}</h1>
+<div class="info-box">
+    <p><b>Тема:</b> {{ ticket.title }}</p>
+    <p><b>Услуга:</b> {{ ticket.service.name }}</p>
+    <p><b>Статус:</b> {{ ticket.status.name }}</p>
+    <p><b>Приоритет:</b> {{ ticket.priority.name }}</p>
+    <p><b>Исполнитель:</b> {{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</p>
+    <p>{{ ticket.description }}</p>
+</div>
+<h2>Комментарии</h2>
+{% for comment in ticket.comments %}
+<div class="comment"><b>{{ comment.author.full_name }}</b> <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span><p>{{ comment.text }}</p></div>
+{% endfor %}
+<form method="post" class="form-card">
+    <label>Комментарий<textarea name="comment" required></textarea></label>
+    <button type="submit">Добавить комментарий</button>
+</form>
+<h2>Документы</h2>
+<ul>
+    {% for doc in ticket.documents %}
+    <li><a href="{{ url_for('client.download_document', document_id=doc.id) }}">{{ doc.title }}</a></li>
+    {% else %}<li>Документы пока не сформированы.</li>{% endfor %}
+</ul>
+{% endblock %}
