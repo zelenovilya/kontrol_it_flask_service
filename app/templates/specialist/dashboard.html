@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Панель специалиста</h1>
+<div class="actions">
+    <a class="button" href="{{ url_for('specialist.new_tickets') }}">Новые заявки</a>
+    <a class="button secondary" href="{{ url_for('specialist.reports') }}">Отчет по выполненным заявкам</a>
+</div>
+{% include "specialist/_tickets_table.html" %}
+{% endblock %}
