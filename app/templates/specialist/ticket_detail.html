@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Заявка №{{ ticket.id }}</h1>
+<div class="info-box">
+    <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
+    <p><b>Тема:</b> {{ ticket.title }}</p>
+    <p><b>Описание:</b> {{ ticket.description }}</p>
+</div>
+<form method="post" enctype="multipart/form-data" class="form-card">
+    <label>Статус
+        <select name="status_id">
+            {% for status in statuses %}<option value="{{ status.id }}" {% if ticket.status_id == status.id %}selected{% endif %}>{{ status.name }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Исполнитель
+        <select name="specialist_id">
+            {% for specialist in specialists %}<option value="{{ specialist.id }}" {% if ticket.specialist_id == specialist.id %}selected{% endif %}>{{ specialist.user.full_name }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Комментарий<textarea name="comment"></textarea></label>
+    <label>Файл<input type="file" name="file"></label>
+    <button type="submit">Сохранить изменения</button>
+</form>
+<div class="actions">
+    <a class="button secondary" href="{{ url_for('specialist.ticket_history', ticket_id=ticket.id) }}">История работ</a>
+    <a class="button" href="{{ url_for('specialist.act_page', ticket_id=ticket.id) }}">Формирование акта</a>
+</div>
+<h2>История комментариев</h2>
+{% for comment in ticket.comments %}<div class="comment"><b>{{ comment.author.full_name }}</b><p>{{ comment.text }}</p></div>{% endfor %}
+{% endblock %}
