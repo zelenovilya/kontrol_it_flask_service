@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Мои заявки</h1>
+<div class="actions"><a class="button" href="{{ url_for('client.create_ticket') }}">Новая заявка</a></div>
+{% include "client/_tickets_table.html" %}
+{% endblock %}
