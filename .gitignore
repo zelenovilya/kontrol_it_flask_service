@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+instance/
+.env
+.DS_Store
+data/*.db
+uploads/*
+!uploads/.gitkeep
+generated/documents/*
+!generated/documents/.gitkeep
+generated/reports/*
+!generated/reports/.gitkeep
