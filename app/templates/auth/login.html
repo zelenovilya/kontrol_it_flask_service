@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Вход</h1>
+<form method="post" class="form-card narrow">
+    <label>Логин<input type="text" name="username" required></label>
+    <label>Пароль<input type="password" name="password" required></label>
+    <button type="submit">Войти</button>
+</form>
+<div class="info-box">
+    <p><b>Администратор:</b> admin / admin123</p>
+    <p><b>Специалист:</b> specialist / spec123</p>
+    <p><b>Клиент:</b> client / client123</p>
+</div>
+{% endblock %}
