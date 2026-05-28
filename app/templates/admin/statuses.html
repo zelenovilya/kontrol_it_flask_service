@@ -1,0 +1,2 @@
+{% extends "base.html" %}
+{% block content %}<h1>Статусы заявок</h1><form method="post" class="form-card narrow"><label>Название<input name="name" required></label><label>Порядок<input name="sort_order" type="number" value="0"></label><button>Добавить</button></form><table><thead><tr><th>Порядок</th><th>Статус</th></tr></thead><tbody>{% for status in statuses %}<tr><td>{{ status.sort_order }}</td><td>{{ status.name }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
