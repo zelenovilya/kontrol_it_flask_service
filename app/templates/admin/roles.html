@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Роли и права доступа</h1>
+<form method="post" class="form-card narrow">
+    <label>Название роли<input name="name" required></label>
+    <label>Описание прав<textarea name="description" required></textarea></label>
+    <button>Добавить роль</button>
+</form>
+<table>
+    <thead><tr><th>Роль</th><th>Описание</th><th>Права доступа</th><th>Пользователей</th></tr></thead>
+    <tbody>
+    {% for role in roles %}
+        <tr>
+            <td>{{ role.name }}</td>
+            <td>{{ role.description }}</td>
+            <td>{{ permissions.get(role.name, 'Права задаются проверками доступа в маршрутах Flask.') }}</td>
+            <td>{{ role.users|length }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
