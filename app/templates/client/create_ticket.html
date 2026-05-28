@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Создать заявку</h1>
+<form method="post" enctype="multipart/form-data" class="form-card">
+    <label>Тема заявки<input type="text" name="title" required></label>
+    <label>Услуга
+        <select name="service_id" required>
+            {% for service in services %}<option value="{{ service.id }}">{{ service.name }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Приоритет
+        <select name="priority_id" required>
+            {% for priority in priorities %}<option value="{{ priority.id }}">{{ priority.name }}</option>{% endfor %}
+        </select>
+    </label>
+    <label>Описание проблемы<textarea name="description" required></textarea></label>
+    <label>Файл<input type="file" name="file"></label>
+    <button type="submit">Отправить заявку</button>
+</form>
+{% endblock %}
