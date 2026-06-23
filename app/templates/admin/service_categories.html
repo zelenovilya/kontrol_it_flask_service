@@ -39,6 +39,7 @@
         <th>Категория</th>
         <th>Описание</th>
         <th>Услуг</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -47,10 +48,15 @@
             <td>{{ category.name }}</td>
             <td>{{ category.description or 'Описание не заполнено' }}</td>
             <td>{{ category.services|length }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.delete_service_category', category_id=category.id) }}" class="inline-form" data-confirm="Удалить категорию {{ category.name }}?">
+                    <button type="submit" class="button small danger">Удалить</button>
+                </form>
+            </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="3">Категории услуг пока не добавлены.</td>
+            <td colspan="4">Категории услуг пока не добавлены.</td>
         </tr>
     {% endfor %}
     </tbody>

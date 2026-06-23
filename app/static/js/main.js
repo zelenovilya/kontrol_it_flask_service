@@ -1,8 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const dangerLinks = document.querySelectorAll('[data-confirm]');
-    dangerLinks.forEach(function (link) {
-        link.addEventListener('click', function (event) {
-            const text = link.getAttribute('data-confirm') || 'Подтвердить действие?';
+    const confirmTargets = document.querySelectorAll('[data-confirm]');
+    confirmTargets.forEach(function (target) {
+        const eventName = target.tagName === 'FORM' ? 'submit' : 'click';
+        target.addEventListener(eventName, function (event) {
+            const text = target.getAttribute('data-confirm') || 'Подтвердить действие?';
             if (!window.confirm(text)) {
                 event.preventDefault();
             }

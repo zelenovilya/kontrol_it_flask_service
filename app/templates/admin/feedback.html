@@ -35,11 +35,14 @@
             <td>{{ message.message }}</td>
             <td>{{ 'Обработано' if message.is_processed else 'Новое' }}</td>
             <td>
-                {% if not message.is_processed %}
-                    <a href="{{ url_for('admin.mark_feedback_processed', message_id=message.id) }}">Отметить обработанным</a>
-                {% else %}
-                    <span class="muted">Действий нет</span>
-                {% endif %}
+                <div class="inline-actions">
+                    {% if not message.is_processed %}
+                        <a class="button small secondary" href="{{ url_for('admin.mark_feedback_processed', message_id=message.id) }}">Отметить</a>
+                    {% endif %}
+                    <form method="post" action="{{ url_for('admin.delete_feedback', message_id=message.id) }}" class="inline-form" data-confirm="Удалить сообщение обратной связи?">
+                        <button type="submit" class="button small danger">Удалить</button>
+                    </form>
+                </div>
             </td>
         </tr>
     {% else %}

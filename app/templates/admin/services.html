@@ -55,6 +55,7 @@
         <th>Описание</th>
         <th>Стоимость</th>
         <th>Активна</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -65,10 +66,20 @@
             <td>{{ service.description or 'Описание не заполнено' }}</td>
             <td>{{ '%.0f'|format(service.price) }} руб.</td>
             <td>{{ 'Да' if service.is_active else 'Нет' }}</td>
+            <td>
+                <div class="inline-actions">
+                    <form method="post" action="{{ url_for('admin.toggle_service_active', service_id=service.id) }}" class="inline-form">
+                        <button type="submit" class="button small secondary">{{ 'Отключить' if service.is_active else 'Включить' }}</button>
+                    </form>
+                    <form method="post" action="{{ url_for('admin.delete_service', service_id=service.id) }}" class="inline-form" data-confirm="Удалить услугу {{ service.name }}?">
+                        <button type="submit" class="button small danger">Удалить</button>
+                    </form>
+                </div>
+            </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="5">Услуги пока не добавлены.</td>
+            <td colspan="6">Услуги пока не добавлены.</td>
         </tr>
     {% endfor %}
     </tbody>

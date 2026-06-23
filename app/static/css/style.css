@@ -261,10 +261,26 @@ button:hover {
     background: var(--header-2);
 }
 
+.button.danger {
+    background: var(--danger);
+}
+
 .button.small {
     padding: 6px 10px;
     border-radius: 6px;
     font-size: 13px;
+}
+
+.inline-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.inline-form {
+    display: inline;
+    margin: 0;
 }
 
 .text-link {

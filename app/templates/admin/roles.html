@@ -7,7 +7,7 @@
     <button>Добавить роль</button>
 </form>
 <table>
-    <thead><tr><th>Роль</th><th>Описание</th><th>Права доступа</th><th>Пользователей</th></tr></thead>
+    <thead><tr><th>Роль</th><th>Описание</th><th>Права доступа</th><th>Пользователей</th><th>Действия</th></tr></thead>
     <tbody>
     {% for role in roles %}
         <tr>
@@ -15,6 +15,11 @@
             <td>{{ role.description }}</td>
             <td>{{ permissions.get(role.name, 'Права задаются проверками доступа в маршрутах Flask.') }}</td>
             <td>{{ role.users|length }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.delete_role', role_id=role.id) }}" class="inline-form" data-confirm="Удалить роль {{ role.name }}?">
+                    <button type="submit" class="button small danger">Удалить</button>
+                </form>
+            </td>
         </tr>
     {% endfor %}
     </tbody>

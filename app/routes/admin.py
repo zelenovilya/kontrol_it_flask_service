@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 from app import db
 from app.decorators import role_required
 from app.models import (
-    User, Role, Client, Employee, Service, ServiceCategory, Ticket,
+    User, Role, Client, Employee, Service, ServiceCategory, Ticket, Attachment,
     TicketStatus, TicketPriority, TicketComment, FeedbackMessage, Article, Document
 )
 
@@ -115,6 +115,33 @@ def toggle_user_active(user_id):
     return redirect(url_for("admin.users"))
 
 
+@admin_bp.route("/users/<int:user_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_user(user_id):
+    user = User.query.get_or_404(user_id)
+    if user.id == current_user.id:
+        flash("Нельзя удалить текущую учетную запись администратора.", "warning")
+        return redirect(url_for("admin.users"))
+    if user.comments or Attachment.query.filter_by(uploaded_by_id=user.id).first() or Document.query.filter_by(created_by_id=user.id).first():
+        flash("Пользователь связан с комментариями, файлами или документами. Для истории заявок его можно только заблокировать.", "warning")
+        return redirect(url_for("admin.users"))
+    if user.client and user.client.tickets:
+        flash("Нельзя удалить клиента, у которого есть заявки. Заблокируйте учетную запись вместо удаления.", "warning")
+        return redirect(url_for("admin.users"))
+    if user.employee and user.employee.assigned_tickets:
+        flash("Нельзя удалить специалиста, которому назначены заявки. Сначала переназначьте обращения.", "warning")
+        return redirect(url_for("admin.users"))
+    if user.client:
+        db.session.delete(user.client)
+    if user.employee:
+        db.session.delete(user.employee)
+    db.session.delete(user)
+    db.session.commit()
+    flash("Пользователь удален.", "success")
+    return redirect(url_for("admin.users"))
+
+
 @admin_bp.route("/roles", methods=["GET", "POST"])
 @login_required
 @role_required("Администратор")
@@ -141,6 +168,20 @@ def roles():
         permissions=permissions,
         breadcrumbs=admin_breadcrumbs({"label": "Роли", "url": None}),
     )
+
+
+@admin_bp.route("/roles/<int:role_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_role(role_id):
+    role = Role.query.get_or_404(role_id)
+    if role.users:
+        flash("Нельзя удалить роль, к которой привязаны пользователи.", "warning")
+        return redirect(url_for("admin.roles"))
+    db.session.delete(role)
+    db.session.commit()
+    flash("Роль удалена.", "success")
+    return redirect(url_for("admin.roles"))
 
 
 @admin_bp.route("/clients")
@@ -192,6 +233,31 @@ def services():
     )
 
 
+@admin_bp.route("/services/<int:service_id>/toggle-active", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def toggle_service_active(service_id):
+    service = Service.query.get_or_404(service_id)
+    service.is_active = not service.is_active
+    db.session.commit()
+    flash("Статус услуги изменен.", "success")
+    return redirect(url_for("admin.services"))
+
+
+@admin_bp.route("/services/<int:service_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_service(service_id):
+    service = Service.query.get_or_404(service_id)
+    if service.tickets:
+        flash("Нельзя удалить услугу, которая уже используется в заявках. Отключите ее, чтобы скрыть из каталога.", "warning")
+        return redirect(url_for("admin.services"))
+    db.session.delete(service)
+    db.session.commit()
+    flash("Услуга удалена.", "success")
+    return redirect(url_for("admin.services"))
+
+
 @admin_bp.route("/service-categories", methods=["GET", "POST"])
 @login_required
 @role_required("Администратор")
@@ -211,6 +277,20 @@ def service_categories():
         categories=ServiceCategory.query.order_by(ServiceCategory.name).all(),
         breadcrumbs=admin_breadcrumbs({"label": "Категории услуг", "url": None}),
     )
+
+
+@admin_bp.route("/service-categories/<int:category_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_service_category(category_id):
+    category = ServiceCategory.query.get_or_404(category_id)
+    if category.services:
+        flash("Нельзя удалить категорию, в которой есть услуги. Сначала удалите или перенесите услуги.", "warning")
+        return redirect(url_for("admin.service_categories"))
+    db.session.delete(category)
+    db.session.commit()
+    flash("Категория услуг удалена.", "success")
+    return redirect(url_for("admin.service_categories"))
 
 
 @admin_bp.route("/tickets")
@@ -273,6 +353,20 @@ def statuses():
     )
 
 
+@admin_bp.route("/statuses/<int:status_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_status(status_id):
+    status = TicketStatus.query.get_or_404(status_id)
+    if status.tickets:
+        flash("Нельзя удалить статус, который используется в заявках.", "warning")
+        return redirect(url_for("admin.statuses"))
+    db.session.delete(status)
+    db.session.commit()
+    flash("Статус удален.", "success")
+    return redirect(url_for("admin.statuses"))
+
+
 @admin_bp.route("/priorities", methods=["GET", "POST"])
 @login_required
 @role_required("Администратор")
@@ -292,6 +386,20 @@ def priorities():
         priorities=TicketPriority.query.order_by(TicketPriority.response_hours).all(),
         breadcrumbs=admin_breadcrumbs({"label": "Приоритеты заявок", "url": None}),
     )
+
+
+@admin_bp.route("/priorities/<int:priority_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_priority(priority_id):
+    priority = TicketPriority.query.get_or_404(priority_id)
+    if priority.tickets:
+        flash("Нельзя удалить приоритет, который используется в заявках.", "warning")
+        return redirect(url_for("admin.priorities"))
+    db.session.delete(priority)
+    db.session.commit()
+    flash("Приоритет удален.", "success")
+    return redirect(url_for("admin.priorities"))
 
 
 @admin_bp.route("/feedback")
@@ -318,6 +426,17 @@ def mark_feedback_processed(message_id):
     return redirect(url_for("admin.feedback"))
 
 
+@admin_bp.route("/feedback/<int:message_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_feedback(message_id):
+    message = FeedbackMessage.query.get_or_404(message_id)
+    db.session.delete(message)
+    db.session.commit()
+    flash("Сообщение обратной связи удалено.", "success")
+    return redirect(url_for("admin.feedback"))
+
+
 @admin_bp.route("/articles", methods=["GET", "POST"])
 @login_required
 @role_required("Администратор")
@@ -340,6 +459,17 @@ def articles():
         articles=Article.query.order_by(Article.created_at.desc()).all(),
         breadcrumbs=admin_breadcrumbs({"label": "База знаний и новости", "url": None}),
     )
+
+
+@admin_bp.route("/articles/<int:article_id>/delete", methods=["POST"])
+@login_required
+@role_required("Администратор")
+def delete_article(article_id):
+    article = Article.query.get_or_404(article_id)
+    db.session.delete(article)
+    db.session.commit()
+    flash("Материал удален.", "success")
+    return redirect(url_for("admin.articles"))
 
 
 @admin_bp.route("/documents")

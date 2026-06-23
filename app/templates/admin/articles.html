@@ -55,6 +55,7 @@
         <th>Краткое описание</th>
         <th>Дата</th>
         <th>Опубликовано</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
@@ -65,10 +66,15 @@
             <td>{{ article.summary or 'Без описания' }}</td>
             <td>{{ article.created_at.strftime('%d.%m.%Y') }}</td>
             <td>{{ 'Да' if article.is_published else 'Нет' }}</td>
+            <td>
+                <form method="post" action="{{ url_for('admin.delete_article', article_id=article.id) }}" class="inline-form" data-confirm="Удалить материал {{ article.title }}?">
+                    <button type="submit" class="button small danger">Удалить</button>
+                </form>
+            </td>
         </tr>
     {% else %}
         <tr>
-            <td colspan="5">Материалы пока не добавлены.</td>
+            <td colspan="6">Материалы пока не добавлены.</td>
         </tr>
     {% endfor %}
     </tbody>
