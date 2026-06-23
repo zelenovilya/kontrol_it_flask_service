@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Документы{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Документы</h1>
+    <p class="lead">
+        Общий список актов и других документов, сформированных по заявкам клиентов.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Как появляются документы</h2>
+    <p>
+        Специалист формирует акт выполненных работ в карточке заявки. Запись о документе
+        сохраняется в базе данных, а файл доступен для скачивания с учетом прав доступа.
+    </p>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Документ</th>
+        <th>Тип</th>
+        <th>Заявка</th>
+        <th>Клиент</th>
+        <th>Кто сформировал</th>
+        <th>Дата</th>
+        <th>Скачать</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for doc in documents %}
+        <tr>
+            <td>{{ doc.title }}</td>
+            <td>{{ doc.document_type }}</td>
+            <td><a href="{{ url_for('admin.ticket_detail', ticket_id=doc.ticket.id) }}">№{{ doc.ticket.id }}</a></td>
+            <td>{{ doc.ticket.client.organization_name }}</td>
+            <td>{{ doc.created_by.full_name }}</td>
+            <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
+            <td><a class="button small" href="{{ url_for('downloads.document', document_id=doc.id) }}">Скачать</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="7">Документы пока не сформированы.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

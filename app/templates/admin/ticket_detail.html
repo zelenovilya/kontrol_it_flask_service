@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Заявка №{{ ticket.id }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Заявка №{{ ticket.id }}</h1>
+    <p class="lead">{{ ticket.title }}</p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Клиент</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Организация</dt>
+                <dd>{{ ticket.client.organization_name }}</dd>
+            </div>
+            <div>
+                <dt>Контакт</dt>
+                <dd>{{ ticket.client.contact_person or ticket.client.user.full_name }}</dd>
+            </div>
+            <div>
+                <dt>Email</dt>
+                <dd>{{ ticket.client.user.email }}</dd>
+            </div>
+        </dl>
+    </article>
+    <article class="info-box">
+        <h2>Параметры заявки</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Услуга</dt>
+                <dd>{{ ticket.service.name }}</dd>
+            </div>
+            <div>
+                <dt>Статус</dt>
+                <dd>{{ ticket.status.name }}</dd>
+            </div>
+            <div>
+                <dt>Приоритет</dt>
+                <dd>{{ ticket.priority.name }}</dd>
+            </div>
+            <div>
+                <dt>Исполнитель</dt>
+                <dd>{{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</dd>
+            </div>
+        </dl>
+    </article>
+</section>
+
+<section class="info-box">
+    <h2>Описание обращения</h2>
+    <p>{{ ticket.description }}</p>
+</section>
+
+<form method="post" class="form-card">
+    <label>
+        Статус
+        <select name="status_id">
+            {% for status in statuses %}
+                <option value="{{ status.id }}" {% if ticket.status_id == status.id %}selected{% endif %}>{{ status.name }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>
+        Исполнитель
+        <select name="specialist_id">
+            <option value="">Не назначен</option>
+            {% for specialist in specialists %}
+                <option value="{{ specialist.id }}" {% if ticket.specialist_id == specialist.id %}selected{% endif %}>
+                    {{ specialist.user.full_name }} — {{ specialist.position }}
+                </option>
+            {% endfor %}
+        </select>
+    </label>
+    <label>
+        Комментарий администратора
+        <textarea name="comment"></textarea>
+    </label>
+    <button type="submit">Сохранить изменения</button>
+</form>
+
+<section>
+    <h2>Комментарии</h2>
+    {% for comment in ticket.comments %}
+        <div class="comment">
+            <b>{{ comment.author.full_name }}</b>
+            <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            <p>{{ comment.text }}</p>
+        </div>
+    {% else %}
+        <p class="muted">Комментарии пока не добавлены.</p>
+    {% endfor %}
+</section>
+
+<section>
+    <h2>Файлы</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Файл</th>
+            <th>Кто загрузил</th>
+            <th>Дата загрузки</th>
+            <th>Скачать</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in ticket.attachments %}
+            <tr>
+                <td>{{ file.original_name }}</td>
+                <td>{{ file.uploaded_by.full_name }}</td>
+                <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td><a class="button small" href="{{ url_for('downloads.attachment', attachment_id=file.id) }}">Скачать файл</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Файлы к заявке пока не прикреплены.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Документы</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Документ</th>
+            <th>Тип</th>
+            <th>Дата</th>
+            <th>Скачать</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for doc in ticket.documents %}
+            <tr>
+                <td>{{ doc.title }}</td>
+                <td>{{ doc.document_type }}</td>
+                <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
+                <td><a class="button small" href="{{ url_for('downloads.document', document_id=doc.id) }}">Скачать</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Документы по заявке пока не сформированы.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

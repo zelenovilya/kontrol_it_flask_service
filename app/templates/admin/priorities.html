@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Приоритеты заявок{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Справочник</p>
+    <h1>Приоритеты заявок</h1>
+    <p class="lead">
+        Приоритет определяет ожидаемое время реакции специалиста и помогает сортировать очередь обращений.
+    </p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card narrow">
+        <label>
+            Название
+            <input name="name" required>
+        </label>
+        <label>
+            Время реакции, часов
+            <input name="response_hours" type="number" value="24" min="1">
+        </label>
+        <button>Добавить приоритет</button>
+    </form>
+    <aside class="info-box">
+        <h2>Пример настройки</h2>
+        <p>
+            Низкий приоритет подходит для плановых работ, средний — для типовых инцидентов,
+            высокий — для обращений, влияющих на работу пользователей или сервиса.
+        </p>
+    </aside>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Приоритет</th>
+        <th>Время реакции</th>
+        <th>Заявок</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for priority in priorities %}
+        <tr>
+            <td>{{ priority.name }}</td>
+            <td>до {{ priority.response_hours }} ч.</td>
+            <td>{{ priority.tickets|length }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">Приоритеты пока не настроены.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

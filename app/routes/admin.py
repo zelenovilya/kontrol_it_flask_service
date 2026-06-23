@@ -7,7 +7,7 @@ from app import db
 from app.decorators import role_required
 from app.models import (
     User, Role, Client, Employee, Service, ServiceCategory, Ticket,
-    TicketStatus, FeedbackMessage, Article
+    TicketStatus, TicketPriority, TicketComment, FeedbackMessage, Article, Document
 )
 
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -192,6 +192,27 @@ def services():
     )
 
 
+@admin_bp.route("/service-categories", methods=["GET", "POST"])
+@login_required
+@role_required("Администратор")
+def service_categories():
+    if request.method == "POST":
+        category = ServiceCategory(
+            name=request.form.get("name", "").strip(),
+            description=request.form.get("description", "").strip(),
+        )
+        db.session.add(category)
+        db.session.commit()
+        flash("Категория услуг добавлена.", "success")
+        return redirect(url_for("admin.service_categories"))
+    return render_template(
+        "admin/service_categories.html",
+        title="Категории услуг",
+        categories=ServiceCategory.query.order_by(ServiceCategory.name).all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Категории услуг", "url": None}),
+    )
+
+
 @admin_bp.route("/tickets")
 @login_required
 @role_required("Администратор")
@@ -201,6 +222,36 @@ def tickets():
         title="Заявки",
         tickets=Ticket.query.order_by(Ticket.created_at.desc()).all(),
         breadcrumbs=admin_breadcrumbs({"label": "Заявки", "url": None}),
+    )
+
+
+@admin_bp.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
+@login_required
+@role_required("Администратор")
+def ticket_detail(ticket_id):
+    ticket = Ticket.query.get_or_404(ticket_id)
+    statuses = TicketStatus.query.order_by(TicketStatus.sort_order).all()
+    specialists = Employee.query.order_by(Employee.id).all()
+    if request.method == "POST":
+        ticket.status_id = int(request.form.get("status_id"))
+        specialist_id = request.form.get("specialist_id")
+        ticket.specialist_id = int(specialist_id) if specialist_id else None
+        comment = request.form.get("comment", "").strip()
+        if comment:
+            db.session.add(TicketComment(ticket=ticket, author_id=current_user.id, text=comment))
+        db.session.commit()
+        flash("Карточка заявки обновлена.", "success")
+        return redirect(url_for("admin.ticket_detail", ticket_id=ticket.id))
+    return render_template(
+        "admin/ticket_detail.html",
+        title=f"Заявка №{ticket.id}",
+        ticket=ticket,
+        statuses=statuses,
+        specialists=specialists,
+        breadcrumbs=admin_breadcrumbs(
+            {"label": "Заявки", "url": url_for("admin.tickets")},
+            {"label": f"Заявка №{ticket.id}", "url": None},
+        ),
     )
 
 
@@ -219,6 +270,27 @@ def statuses():
         title="Статусы заявок",
         statuses=TicketStatus.query.order_by(TicketStatus.sort_order).all(),
         breadcrumbs=admin_breadcrumbs({"label": "Статусы заявок", "url": None}),
+    )
+
+
+@admin_bp.route("/priorities", methods=["GET", "POST"])
+@login_required
+@role_required("Администратор")
+def priorities():
+    if request.method == "POST":
+        priority = TicketPriority(
+            name=request.form.get("name", "").strip(),
+            response_hours=int(request.form.get("response_hours") or 24),
+        )
+        db.session.add(priority)
+        db.session.commit()
+        flash("Приоритет заявок добавлен.", "success")
+        return redirect(url_for("admin.priorities"))
+    return render_template(
+        "admin/priorities.html",
+        title="Приоритеты заявок",
+        priorities=TicketPriority.query.order_by(TicketPriority.response_hours).all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Приоритеты заявок", "url": None}),
     )
 
 
@@ -270,6 +342,19 @@ def articles():
     )
 
 
+@admin_bp.route("/documents")
+@login_required
+@role_required("Администратор")
+def documents():
+    docs = Document.query.order_by(Document.created_at.desc()).all()
+    return render_template(
+        "admin/documents.html",
+        title="Документы",
+        documents=docs,
+        breadcrumbs=admin_breadcrumbs({"label": "Документы", "url": None}),
+    )
+
+
 @admin_bp.route("/reports")
 @login_required
 @role_required("Администратор")
@@ -304,3 +389,14 @@ def tickets_report():
     file_path = Path(current_app.config["GENERATED_REPORTS_FOLDER"]) / "admin_tickets_report.xlsx"
     wb.save(file_path)
     return send_file(file_path, as_attachment=True)
+
+
+@admin_bp.route("/help")
+@login_required
+@role_required("Администратор")
+def help_page():
+    return render_template(
+        "admin/help.html",
+        title="Справка администратора",
+        breadcrumbs=admin_breadcrumbs({"label": "Справка администратора", "url": None}),
+    )

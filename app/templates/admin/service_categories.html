@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Категории услуг{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Справочник</p>
+    <h1>Категории услуг</h1>
+    <p class="lead">
+        Категории группируют услуги по направлениям: техническая поддержка, администрирование,
+        безопасность и другие виды ИТ-сопровождения.
+    </p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card">
+        <label>
+            Название категории
+            <input name="name" required>
+        </label>
+        <label>
+            Описание
+            <textarea name="description"></textarea>
+        </label>
+        <button>Добавить категорию</button>
+    </form>
+    <aside class="info-box">
+        <h2>Зачем нужны категории</h2>
+        <p>
+            Они помогают клиенту быстрее найти подходящую услугу, а администратору
+            анализировать структуру обращений по направлениям работ.
+        </p>
+    </aside>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Категория</th>
+        <th>Описание</th>
+        <th>Услуг</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for category in categories %}
+        <tr>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description or 'Описание не заполнено' }}</td>
+            <td>{{ category.services|length }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">Категории услуг пока не добавлены.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

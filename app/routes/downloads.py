@@ -20,7 +20,7 @@ def can_access_ticket(ticket):
 
 def ticket_redirect_url(ticket):
     if current_user.has_role("Администратор"):
-        return url_for("admin.tickets")
+        return url_for("admin.ticket_detail", ticket_id=ticket.id)
     if current_user.has_role("Специалист"):
         return url_for("specialist.ticket_detail", ticket_id=ticket.id)
     if current_user.has_role("Клиент"):
