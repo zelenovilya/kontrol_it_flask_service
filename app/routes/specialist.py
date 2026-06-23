@@ -158,6 +158,24 @@ def reports():
     )
 
 
+@specialist_bp.route("/documents")
+@login_required
+@role_required("Специалист")
+def documents():
+    docs = (
+        Document.query.join(Ticket)
+        .filter(Ticket.specialist_id == current_user.employee.id)
+        .order_by(Document.created_at.desc())
+        .all()
+    )
+    return render_template(
+        "specialist/documents.html",
+        title="Документы специалиста",
+        documents=docs,
+        breadcrumbs=specialist_breadcrumbs({"label": "Документы", "url": None}),
+    )
+
+
 @specialist_bp.route("/reports/tickets.xlsx")
 @login_required
 @role_required("Специалист")
@@ -179,3 +197,14 @@ def tickets_report():
     file_path = Path(current_app.config["GENERATED_REPORTS_FOLDER"]) / "tickets_report.xlsx"
     wb.save(file_path)
     return send_file(file_path, as_attachment=True)
+
+
+@specialist_bp.route("/help")
+@login_required
+@role_required("Специалист")
+def help_page():
+    return render_template(
+        "specialist/help.html",
+        title="Справка специалиста",
+        breadcrumbs=specialist_breadcrumbs({"label": "Справка специалиста", "url": None}),
+    )

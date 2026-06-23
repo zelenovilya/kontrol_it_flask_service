@@ -138,3 +138,14 @@ def profile():
         client=current_user.client,
         breadcrumbs=client_breadcrumbs({"label": "Профиль", "url": None}),
     )
+
+
+@client_bp.route("/help")
+@login_required
+@role_required("Клиент")
+def help_page():
+    return render_template(
+        "client/help.html",
+        title="Справка клиента",
+        breadcrumbs=client_breadcrumbs({"label": "Справка клиента", "url": None}),
+    )

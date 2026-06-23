@@ -44,6 +44,7 @@
 
 <div class="actions">
     <a class="button" href="{{ url_for('specialist.generate_act', ticket_id=ticket.id) }}">Скачать акт .docx</a>
+    <a class="button secondary" href="{{ url_for('specialist.documents') }}">Все документы</a>
     <a class="button secondary" href="{{ url_for('specialist.ticket_detail', ticket_id=ticket.id) }}">Вернуться к заявке</a>
 </div>
 {% endblock %}

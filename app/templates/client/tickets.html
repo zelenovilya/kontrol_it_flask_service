@@ -14,6 +14,7 @@
 <div class="actions">
     <a class="button" href="{{ url_for('client.create_ticket') }}">Новая заявка</a>
     <a class="button secondary" href="{{ url_for('client.dashboard') }}">Вернуться в кабинет</a>
+    <a class="button secondary" href="{{ url_for('client.help_page') }}">Справка</a>
 </div>
 
 {% include "client/_tickets_table.html" %}

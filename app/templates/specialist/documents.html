@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Документы специалиста{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>Документы специалиста</h1>
+    <p class="lead">
+        Документы по назначенным заявкам: акты выполненных работ и другие файлы,
+        сформированные в процессе обработки обращений.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Как сформировать акт</h2>
+    <p>
+        Откройте карточку заявки, перейдите в раздел формирования акта и скачайте DOCX.
+        После генерации запись о документе сохраняется в базе данных.
+    </p>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Документ</th>
+        <th>Тип</th>
+        <th>Заявка</th>
+        <th>Клиент</th>
+        <th>Дата</th>
+        <th>Скачать</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for doc in documents %}
+        <tr>
+            <td>{{ doc.title }}</td>
+            <td>{{ doc.document_type }}</td>
+            <td><a href="{{ url_for('specialist.ticket_detail', ticket_id=doc.ticket.id) }}">№{{ doc.ticket.id }}</a></td>
+            <td>{{ doc.ticket.client.organization_name }}</td>
+            <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
+            <td><a class="button small" href="{{ url_for('downloads.document', document_id=doc.id) }}">Скачать</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6">Документы по назначенным заявкам пока не сформированы.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
