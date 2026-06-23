@@ -1,12 +1,53 @@
 {% extends "base.html" %}
+
+{% block title %}Обратная связь{% endblock %}
+
 {% block content %}
-<h1>Обратная связь</h1>
-<form method="post" class="form-card">
-    <label>ФИО или организация<input type="text" name="name" required></label>
-    <label>Email<input type="email" name="email" required></label>
-    <label>Телефон<input type="text" name="phone"></label>
-    <label>Тема<input type="text" name="subject" required></label>
-    <label>Сообщение<textarea name="message" required></textarea></label>
-    <button type="submit">Отправить</button>
-</form>
+<section class="page-header">
+    <p class="eyebrow">Контакты</p>
+    <h1>Обратная связь</h1>
+    <p class="lead">
+        Форма сохраняет сообщение в базе данных, после чего администратор видит обращение
+        в закрытом разделе «Обратная связь».
+    </p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card">
+        <label>
+            ФИО или организация
+            <input type="text" name="name" required>
+        </label>
+        <label>
+            Email
+            <input type="email" name="email" required>
+        </label>
+        <label>
+            Телефон
+            <input type="text" name="phone">
+        </label>
+        <label>
+            Тема
+            <input type="text" name="subject" required>
+        </label>
+        <label>
+            Сообщение
+            <textarea name="message" required></textarea>
+        </label>
+        <button type="submit">Отправить</button>
+    </form>
+    <aside class="info-box">
+        <h2>Когда использовать форму</h2>
+        <ul class="clean-list">
+            <li>если нужно задать общий вопрос о сервисе;</li>
+            <li>если регистрация еще не выполнена;</li>
+            <li>если требуется уточнить порядок работы с личным кабинетом;</li>
+            <li>если обращение не относится к конкретной технической заявке.</li>
+        </ul>
+        <p>
+            Для технического инцидента удобнее войти в личный кабинет и создать заявку,
+            чтобы специалист видел услугу, приоритет и прикрепленные файлы.
+        </p>
+    </aside>
+</section>
 {% endblock %}

@@ -1,6 +1,26 @@
 {% extends "base.html" %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
 {% block content %}
-<h1>{{ article.title }}</h1>
-<p class="lead">{{ article.summary }}</p>
-<p>{{ article.content }}</p>
+<article class="article-view">
+    <p class="eyebrow">{{ "База знаний" if article.article_type == "knowledge" else "Новости" }}</p>
+    <h1>{{ article.title }}</h1>
+    <p class="lead">{{ article.summary }}</p>
+    <div class="article-meta">
+        <span>Дата публикации: {{ article.created_at.strftime('%d.%m.%Y') }}</span>
+        <span>Тип материала: {{ "инструкция" if article.article_type == "knowledge" else "новость" }}</span>
+    </div>
+    <div class="article-body">
+        <p>{{ article.content }}</p>
+    </div>
+</article>
+
+<section class="info-box">
+    <h2>Как использовать материал</h2>
+    <p>
+        Если статья описывает порядок работы с заявкой, применяйте рекомендации при создании
+        обращения или при обработке заявки в закрытом кабинете.
+    </p>
+</section>
 {% endblock %}

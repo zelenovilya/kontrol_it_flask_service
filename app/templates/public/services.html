@@ -1,15 +1,54 @@
 {% extends "base.html" %}
+
+{% block title %}Услуги{% endblock %}
+
 {% block content %}
-<h1>Услуги</h1>
-<p class="lead">Перечень услуг, которые клиент может выбрать при создании заявки.</p>
+<section class="page-header">
+    <p class="eyebrow">Каталог услуг</p>
+    <h1>Услуги</h1>
+    <p class="lead">Перечень услуг, которые клиент выбирает при создании заявки на ИТ-обслуживание.</p>
+    <p>
+        Каталог помогает заранее понять, какие работы выполняет ООО «Контроль ИТ»:
+        от настройки рабочего места до сопровождения серверов и проверки доступа.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Как услуга связана с заявкой</h2>
+    <p>
+        При создании обращения клиент выбирает услугу и приоритет. Эти данные помогают
+        администратору назначить исполнителя, а специалисту оценить ожидаемый результат.
+    </p>
+    <ul class="clean-list">
+        <li>категория показывает направление работ;</li>
+        <li>стоимость используется для учебного учета услуг;</li>
+        <li>описание помогает клиенту выбрать подходящий вариант;</li>
+        <li>неактивные услуги скрываются из публичного каталога.</li>
+    </ul>
+</section>
+
 <div class="cards">
     {% for service in services %}
-    <article class="card">
-        <h3>{{ service.name }}</h3>
-        <p>{{ service.description }}</p>
-        <p><b>Категория:</b> {{ service.category.name }}</p>
-        <p><b>Стоимость:</b> {{ '%.0f'|format(service.price) }} руб.</p>
-    </article>
+        <article class="card service-card">
+            <p class="eyebrow">{{ service.category.name }}</p>
+            <h2>{{ service.name }}</h2>
+            <p>{{ service.description }}</p>
+            <dl class="meta-list">
+                <div>
+                    <dt>Категория</dt>
+                    <dd>{{ service.category.name }}</dd>
+                </div>
+                <div>
+                    <dt>Стоимость</dt>
+                    <dd>{{ '%.0f'|format(service.price) }} руб.</dd>
+                </div>
+            </dl>
+        </article>
+    {% else %}
+        <article class="card">
+            <h2>Каталог пуст</h2>
+            <p>Администратор может добавить услуги через закрытую панель управления.</p>
+        </article>
     {% endfor %}
 </div>
 {% endblock %}

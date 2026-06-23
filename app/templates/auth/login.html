@@ -1,14 +1,34 @@
 {% extends "base.html" %}
+
+{% block title %}Вход{% endblock %}
+
 {% block content %}
-<h1>Вход</h1>
-<form method="post" class="form-card narrow">
-    <label>Логин<input type="text" name="username" required></label>
-    <label>Пароль<input type="password" name="password" required></label>
-    <button type="submit">Войти</button>
-</form>
-<div class="info-box">
-    <p><b>Администратор:</b> admin / admin123</p>
-    <p><b>Специалист:</b> specialist / spec123</p>
-    <p><b>Клиент:</b> client / client123</p>
-</div>
+<section class="page-header">
+    <p class="eyebrow">Авторизация</p>
+    <h1>Вход</h1>
+    <p class="lead">Войдите в систему, чтобы открыть личный кабинет, список заявок и закрытые рабочие разделы.</p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card narrow">
+        <label>
+            Логин
+            <input type="text" name="username" required>
+        </label>
+        <label>
+            Пароль
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit">Войти</button>
+    </form>
+    <aside class="info-box">
+        <h2>Тестовые учетные записи</h2>
+        <p><b>Администратор:</b> admin / admin123</p>
+        <p><b>Специалист:</b> specialist / spec123</p>
+        <p><b>Клиент:</b> client / client123</p>
+        <p>
+            После входа пользователь перенаправляется в раздел, соответствующий его роли.
+        </p>
+    </aside>
+</section>
 {% endblock %}

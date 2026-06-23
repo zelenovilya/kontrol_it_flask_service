@@ -1,10 +1,87 @@
 {% extends "base.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
 {% block content %}
-<h1>{{ page.title }}</h1>
-<p class="lead">{{ page.lead }}</p>
-<p>{{ page.text }}</p>
-<section class="info-box">
-    <h2>Связь с веб-сервисом</h2>
-    <p>Раздел используется для информирования клиентов и поддержки публичной части сетевого ресурса.</p>
+<section class="page-header">
+    <p class="eyebrow">Публичный раздел</p>
+    <h1>{{ page.title }}</h1>
+    <p class="lead">{{ page.lead }}</p>
+    <p>{{ page.intro }}</p>
 </section>
+
+{% if page.cards %}
+    <section class="cards">
+        {% for card in page.cards %}
+            <article class="card">
+                <h2>{{ card.title }}</h2>
+                <p>{{ card.text }}</p>
+            </article>
+        {% endfor %}
+    </section>
+{% endif %}
+
+{% if page.sections %}
+    <section class="section-stack">
+        {% for section in page.sections %}
+            <article class="info-box">
+                <h2>{{ section.title }}</h2>
+                <p>{{ section.text }}</p>
+                {% if section["items"] %}
+                    <ul class="clean-list">
+                        {% for item in section["items"] %}
+                            <li>{{ item }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </section>
+{% endif %}
+
+{% if page.steps %}
+    <section class="info-box">
+        <h2>Порядок работы</h2>
+        <ol class="step-list">
+            {% for step in page["steps"] %}
+                <li>{{ step }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+{% endif %}
+
+{% if page.table %}
+    <section>
+        <h2>Сравнительная таблица</h2>
+        <table>
+            <thead>
+            <tr>
+                {% for header in page["table"]["headers"] %}
+                    <th>{{ header }}</th>
+                {% endfor %}
+            </tr>
+            </thead>
+            <tbody>
+            {% for row in page["table"]["rows"] %}
+                <tr>
+                    {% for cell in row %}
+                        <td>{{ cell }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endif %}
+
+{% if page.faq %}
+    <section class="section-stack">
+        {% for item in page["faq"] %}
+            <article class="info-box">
+                <h2>{{ item.question }}</h2>
+                <p>{{ item.answer }}</p>
+            </article>
+        {% endfor %}
+    </section>
+{% endif %}
 {% endblock %}

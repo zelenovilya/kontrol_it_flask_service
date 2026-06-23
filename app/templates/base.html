@@ -3,14 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ title }} | Контроль ИТ</title>
+    <title>{% block title %}{{ title }}{% endblock %} | Контроль ИТ</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
 <header class="site-header">
     <div class="container header-inner">
         <a class="logo" href="{{ url_for('public.home') }}">Контроль ИТ</a>
-        <nav class="main-nav">
+        <nav class="main-nav" aria-label="Основная навигация">
             <a href="{{ url_for('public.home') }}">Главная</a>
             <a href="{{ url_for('public.static_page', page_slug='about') }}">О компании</a>
             <a href="{{ url_for('public.services') }}">Услуги</a>
@@ -22,12 +22,19 @@
             <a href="{{ url_for('public.news') }}">Новости</a>
             <a href="{{ url_for('public.static_page', page_slug='contacts') }}">Контакты</a>
             <a href="{{ url_for('public.feedback') }}">Обратная связь</a>
+            <a href="{{ url_for('public.static_page', page_slug='help') }}">Справка</a>
         </nav>
         <div class="auth-panel">
             {% if current_user.is_authenticated %}
-                {% if current_user.has_role('Администратор') %}<a href="{{ url_for('admin.dashboard') }}">Админ-панель</a>{% endif %}
-                {% if current_user.has_role('Специалист') %}<a href="{{ url_for('specialist.dashboard') }}">Кабинет специалиста</a>{% endif %}
-                {% if current_user.has_role('Клиент') %}<a href="{{ url_for('client.dashboard') }}">Кабинет клиента</a>{% endif %}
+                {% if current_user.has_role('Администратор') %}
+                    <a href="{{ url_for('admin.dashboard') }}">Админ-панель</a>
+                {% endif %}
+                {% if current_user.has_role('Специалист') %}
+                    <a href="{{ url_for('specialist.dashboard') }}">Кабинет специалиста</a>
+                {% endif %}
+                {% if current_user.has_role('Клиент') %}
+                    <a href="{{ url_for('client.dashboard') }}">Кабинет клиента</a>
+                {% endif %}
                 <a href="{{ url_for('public.logout') }}">Выйти</a>
             {% else %}
                 <a href="{{ url_for('public.login') }}">Вход</a>
@@ -38,9 +45,21 @@
 </header>
 
 <main class="container page">
-    <div class="breadcrumbs">
-        <a href="{{ url_for('public.home') }}">Главная</a> / <span>{{ title }}</span>
-    </div>
+    {% block breadcrumbs %}
+        <nav class="breadcrumbs" aria-label="Хлебные крошки">
+            {% set crumb_items = breadcrumbs if breadcrumbs is defined and breadcrumbs else [{'label': 'Главная', 'url': url_for('public.home')}, {'label': title, 'url': None}] %}
+            {% for crumb in crumb_items %}
+                {% if not loop.first %}
+                    <span class="breadcrumb-separator">/</span>
+                {% endif %}
+                {% if crumb.url and not loop.last %}
+                    <a href="{{ crumb.url }}">{{ crumb.label }}</a>
+                {% else %}
+                    <span>{{ crumb.label }}</span>
+                {% endif %}
+            {% endfor %}
+        </nav>
+    {% endblock %}
 
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -56,9 +75,21 @@
 </main>
 
 <footer class="site-footer">
-    <div class="container">
-        <p>Веб-сервис учета и обработки заявок на ИТ-обслуживание ООО «Контроль ИТ».</p>
-        <p>Автор работы: Зеленов Илья Денисович.</p>
+    <div class="container footer-grid">
+        <div>
+            <strong>Контроль ИТ</strong>
+            <p>Веб-сервис учета и обработки заявок на ИТ-обслуживание для ООО «Контроль ИТ».</p>
+        </div>
+        <div>
+            <strong>Учебная разработка</strong>
+            <p>Автор работы: Зеленов Илья Денисович.</p>
+            <p>2026 год. Проект разработан на Python Flask без CMS.</p>
+        </div>
+        <div>
+            <strong>Разделы</strong>
+            <p><a href="{{ url_for('public.static_page', page_slug='help') }}">Справка по системе</a></p>
+            <p><a href="https://github.com/zelenovilya/kontrol_it_flask_service">Репозиторий GitHub</a></p>
+        </div>
     </div>
 </footer>
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
