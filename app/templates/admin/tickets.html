@@ -1,2 +1,55 @@
 {% extends "base.html" %}
-{% block content %}<h1>Заявки</h1><table><thead><tr><th>№</th><th>Клиент</th><th>Тема</th><th>Услуга</th><th>Статус</th><th>Приоритет</th></tr></thead><tbody>{% for ticket in tickets %}<tr><td>{{ ticket.id }}</td><td>{{ ticket.client.organization_name }}</td><td>{{ ticket.title }}</td><td>{{ ticket.service.name }}</td><td>{{ ticket.status.name }}</td><td>{{ ticket.priority.name }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Заявки{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Заявки</h1>
+    <p class="lead">
+        Общая очередь обращений клиентов с услугами, приоритетами, исполнителями и текущими статусами.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Как проверять очередь</h2>
+    <p>
+        В таблице видно, какие заявки еще не назначены специалисту, какие находятся в работе
+        и какие уже выполнены. Подробная карточка заявки будет использоваться для смены статуса,
+        комментариев, файлов и документов.
+    </p>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Дата</th>
+        <th>Клиент</th>
+        <th>Тема</th>
+        <th>Услуга</th>
+        <th>Статус</th>
+        <th>Приоритет</th>
+        <th>Исполнитель</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for ticket in tickets %}
+        <tr>
+            <td>№{{ ticket.id }}</td>
+            <td>{{ ticket.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>{{ ticket.client.organization_name }}</td>
+            <td>{{ ticket.title }}</td>
+            <td>{{ ticket.service.name }}</td>
+            <td>{{ ticket.status.name }}</td>
+            <td>{{ ticket.priority.name }}</td>
+            <td>{{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="8">Заявки пока не созданы.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

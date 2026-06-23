@@ -1,13 +1,49 @@
 {% extends "base.html" %}
+
+{% block title %}Акт по заявке №{{ ticket.id }}{% endblock %}
+
 {% block content %}
-<h1>Формирование акта по заявке №{{ ticket.id }}</h1>
-<div class="info-box">
-    <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
-    <p><b>Услуга:</b> {{ ticket.service.name }}</p>
-    <p><b>Исполнитель:</b> {{ ticket.specialist.user.full_name if ticket.specialist else current_user.full_name }}</p>
-    <p><b>Статус:</b> {{ ticket.status.name }}</p>
-</div>
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>Формирование акта по заявке №{{ ticket.id }}</h1>
+    <p class="lead">
+        Акт выполненных работ формируется в формате DOCX и сохраняется в документах заявки.
+    </p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Данные для документа</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Клиент</dt>
+                <dd>{{ ticket.client.organization_name }}</dd>
+            </div>
+            <div>
+                <dt>Услуга</dt>
+                <dd>{{ ticket.service.name }}</dd>
+            </div>
+            <div>
+                <dt>Исполнитель</dt>
+                <dd>{{ ticket.specialist.user.full_name if ticket.specialist else current_user.full_name }}</dd>
+            </div>
+            <div>
+                <dt>Статус</dt>
+                <dd>{{ ticket.status.name }}</dd>
+            </div>
+        </dl>
+    </article>
+    <article class="info-box">
+        <h2>Что попадет в акт</h2>
+        <p>
+            В документ включаются номер заявки, клиент, услуга, исполнитель, описание работ
+            и дата формирования.
+        </p>
+    </article>
+</section>
+
 <div class="actions">
     <a class="button" href="{{ url_for('specialist.generate_act', ticket_id=ticket.id) }}">Скачать акт .docx</a>
+    <a class="button secondary" href="{{ url_for('specialist.ticket_detail', ticket_id=ticket.id) }}">Вернуться к заявке</a>
 </div>
 {% endblock %}

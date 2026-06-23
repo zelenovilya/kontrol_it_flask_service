@@ -1,14 +1,45 @@
 {% extends "base.html" %}
+
+{% block title %}Отчет специалиста{% endblock %}
+
 {% block content %}
-<h1>Отчет по выполненным заявкам</h1>
-<div class="actions"><a class="button" href="{{ url_for('specialist.tickets_report') }}">Скачать отчет Excel</a></div>
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>Отчет по выполненным заявкам</h1>
+    <p class="lead">
+        Раздел показывает завершенные обращения текущего специалиста и позволяет скачать Excel-отчет.
+    </p>
+</section>
+
+<div class="actions">
+    <a class="button" href="{{ url_for('specialist.tickets_report') }}">Скачать отчет Excel</a>
+</div>
+
 <table>
-    <thead><tr><th>№</th><th>Дата</th><th>Клиент</th><th>Услуга</th><th>Статус</th></tr></thead>
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Дата</th>
+        <th>Клиент</th>
+        <th>Услуга</th>
+        <th>Статус</th>
+        <th>Приоритет</th>
+    </tr>
+    </thead>
     <tbody>
     {% for ticket in tickets %}
-        <tr><td>{{ ticket.id }}</td><td>{{ ticket.created_at.strftime('%d.%m.%Y') }}</td><td>{{ ticket.client.organization_name }}</td><td>{{ ticket.service.name }}</td><td>{{ ticket.status.name }}</td></tr>
+        <tr>
+            <td>№{{ ticket.id }}</td>
+            <td>{{ ticket.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>{{ ticket.client.organization_name }}</td>
+            <td>{{ ticket.service.name }}</td>
+            <td>{{ ticket.status.name }}</td>
+            <td>{{ ticket.priority.name }}</td>
+        </tr>
     {% else %}
-        <tr><td colspan="5">Выполненных заявок пока нет.</td></tr>
+        <tr>
+            <td colspan="6">Выполненных заявок пока нет.</td>
+        </tr>
     {% endfor %}
     </tbody>
 </table>

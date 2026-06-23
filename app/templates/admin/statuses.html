@@ -1,2 +1,57 @@
 {% extends "base.html" %}
-{% block content %}<h1>Статусы заявок</h1><form method="post" class="form-card narrow"><label>Название<input name="name" required></label><label>Порядок<input name="sort_order" type="number" value="0"></label><button>Добавить</button></form><table><thead><tr><th>Порядок</th><th>Статус</th></tr></thead><tbody>{% for status in statuses %}<tr><td>{{ status.sort_order }}</td><td>{{ status.name }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Статусы заявок{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Справочник</p>
+    <h1>Статусы заявок</h1>
+    <p class="lead">
+        Статусы показывают этап обработки обращения: от регистрации до закрытия.
+    </p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card narrow">
+        <label>
+            Название
+            <input name="name" required>
+        </label>
+        <label>
+            Порядок
+            <input name="sort_order" type="number" value="0">
+        </label>
+        <button>Добавить</button>
+    </form>
+    <aside class="info-box">
+        <h2>Рекомендованная цепочка</h2>
+        <p>
+            Для проверки проекта используются статусы «Новая», «Принята», «В работе»,
+            «Ожидает клиента», «Выполнена» и «Закрыта».
+        </p>
+    </aside>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Порядок</th>
+        <th>Статус</th>
+        <th>Заявок</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for status in statuses %}
+        <tr>
+            <td>{{ status.sort_order }}</td>
+            <td>{{ status.name }}</td>
+            <td>{{ status.tickets|length }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="3">Статусы пока не настроены.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,2 +1,50 @@
 {% extends "base.html" %}
-{% block content %}<h1>Клиенты</h1><table><thead><tr><th>Организация</th><th>Контакт</th><th>Email</th><th>Телефон</th></tr></thead><tbody>{% for client in clients %}<tr><td>{{ client.organization_name }}</td><td>{{ client.contact_person }}</td><td>{{ client.user.email }}</td><td>{{ client.user.phone }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Клиенты{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Клиенты</h1>
+    <p class="lead">
+        Список организаций и контактных лиц, которые могут создавать заявки на ИТ-обслуживание.
+    </p>
+</section>
+
+<section class="info-box">
+    <h2>Для чего нужен раздел</h2>
+    <p>
+        Клиент связан с учетной записью пользователя и организацией. По этой связи система
+        ограничивает доступ к заявкам, файлам и документам в личном кабинете.
+    </p>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Организация</th>
+        <th>Контакт</th>
+        <th>Email</th>
+        <th>Телефон</th>
+        <th>Адрес</th>
+        <th>Заявок</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for client in clients %}
+        <tr>
+            <td>{{ client.organization_name }}</td>
+            <td>{{ client.contact_person or client.user.full_name }}</td>
+            <td>{{ client.user.email }}</td>
+            <td>{{ client.user.phone or 'Не указан' }}</td>
+            <td>{{ client.address or 'Не указан' }}</td>
+            <td>{{ client.tickets|length }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6">Клиенты пока не зарегистрированы.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

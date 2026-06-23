@@ -1,26 +1,118 @@
 {% extends "base.html" %}
+
+{% block title %}Заявка №{{ ticket.id }}{% endblock %}
+
 {% block content %}
-<h1>Заявка №{{ ticket.id }}</h1>
-<div class="info-box">
-    <p><b>Тема:</b> {{ ticket.title }}</p>
-    <p><b>Услуга:</b> {{ ticket.service.name }}</p>
-    <p><b>Статус:</b> {{ ticket.status.name }}</p>
-    <p><b>Приоритет:</b> {{ ticket.priority.name }}</p>
-    <p><b>Исполнитель:</b> {{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</p>
-    <p>{{ ticket.description }}</p>
-</div>
-<h2>Комментарии</h2>
-{% for comment in ticket.comments %}
-<div class="comment"><b>{{ comment.author.full_name }}</b> <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span><p>{{ comment.text }}</p></div>
-{% endfor %}
+<section class="page-header">
+    <p class="eyebrow">Личный кабинет клиента</p>
+    <h1>Заявка №{{ ticket.id }}</h1>
+    <p class="lead">{{ ticket.title }}</p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Параметры обращения</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Услуга</dt>
+                <dd>{{ ticket.service.name }}</dd>
+            </div>
+            <div>
+                <dt>Статус</dt>
+                <dd>{{ ticket.status.name }}</dd>
+            </div>
+            <div>
+                <dt>Приоритет</dt>
+                <dd>{{ ticket.priority.name }}</dd>
+            </div>
+            <div>
+                <dt>Исполнитель</dt>
+                <dd>{{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</dd>
+            </div>
+            <div>
+                <dt>Создана</dt>
+                <dd>{{ ticket.created_at.strftime('%d.%m.%Y %H:%M') }}</dd>
+            </div>
+        </dl>
+    </article>
+    <article class="info-box">
+        <h2>Описание проблемы</h2>
+        <p>{{ ticket.description }}</p>
+    </article>
+</section>
+
+<section>
+    <h2>Комментарии</h2>
+    {% for comment in ticket.comments %}
+        <div class="comment">
+            <b>{{ comment.author.full_name }}</b>
+            <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            <p>{{ comment.text }}</p>
+        </div>
+    {% else %}
+        <p class="muted">Комментарии пока не добавлены.</p>
+    {% endfor %}
+</section>
+
 <form method="post" class="form-card">
-    <label>Комментарий<textarea name="comment" required></textarea></label>
+    <label>
+        Комментарий
+        <textarea name="comment" required></textarea>
+    </label>
     <button type="submit">Добавить комментарий</button>
 </form>
-<h2>Документы</h2>
-<ul>
-    {% for doc in ticket.documents %}
-    <li><a href="{{ url_for('client.download_document', document_id=doc.id) }}">{{ doc.title }}</a></li>
-    {% else %}<li>Документы пока не сформированы.</li>{% endfor %}
-</ul>
+
+<section>
+    <h2>Прикрепленные файлы</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Файл</th>
+            <th>Кто загрузил</th>
+            <th>Дата загрузки</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in ticket.attachments %}
+            <tr>
+                <td>{{ file.original_name }}</td>
+                <td>{{ file.uploaded_by.full_name }}</td>
+                <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Файлы к заявке пока не прикреплены.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2>Документы</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Документ</th>
+            <th>Тип</th>
+            <th>Дата</th>
+            <th>Скачать</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for doc in ticket.documents %}
+            <tr>
+                <td>{{ doc.title }}</td>
+                <td>{{ doc.document_type }}</td>
+                <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
+                <td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">Документы пока не сформированы.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

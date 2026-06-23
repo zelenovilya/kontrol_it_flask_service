@@ -1,2 +1,55 @@
 {% extends "base.html" %}
-{% block content %}<h1>Отчеты</h1><p class="lead">Сводка по количеству заявок в разрезе статусов.</p><div class="actions"><a class="button" href="{{ url_for('admin.tickets_report') }}">Скачать отчет Excel</a></div><table><thead><tr><th>Статус</th><th>Количество заявок</th></tr></thead><tbody>{% for status, count in tickets_by_status %}<tr><td>{{ status }}</td><td>{{ count }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Отчеты{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Отчеты</h1>
+    <p class="lead">
+        Сводка по количеству заявок в разрезе статусов и выгрузка общего Excel-отчета.
+    </p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Назначение отчета</h2>
+        <p>
+            Excel-файл содержит номер заявки, дату, клиента, услугу, статус, приоритет
+            и назначенного исполнителя. Его можно использовать для учебной проверки отчетности.
+        </p>
+    </article>
+    <article class="info-box">
+        <h2>Формат</h2>
+        <p>
+            Отчет создается библиотекой openpyxl и скачивается как файл XLSX через защищенный
+            маршрут администратора.
+        </p>
+    </article>
+</section>
+
+<div class="actions">
+    <a class="button" href="{{ url_for('admin.tickets_report') }}">Скачать отчет Excel</a>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Статус</th>
+        <th>Количество заявок</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for status, count in tickets_by_status %}
+        <tr>
+            <td>{{ status }}</td>
+            <td>{{ count }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="2">Нет данных для отчета.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

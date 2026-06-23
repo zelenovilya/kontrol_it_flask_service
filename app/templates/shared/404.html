@@ -1,2 +1,25 @@
 {% extends "base.html" %}
-{% block content %}<h1>Страница не найдена</h1><p>Запрошенный раздел отсутствует.</p>{% endblock %}
+
+{% block title %}Страница не найдена{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Ошибка 404</p>
+    <h1>Страница не найдена</h1>
+    <p class="lead">Запрошенный раздел отсутствует или был перемещен.</p>
+</section>
+
+<section class="info-box">
+    <h2>Что можно сделать</h2>
+    <ul class="clean-list">
+        <li>перейти на главную страницу;</li>
+        <li>открыть справку по системе;</li>
+        <li>войти в личный кабинет, если нужен закрытый раздел;</li>
+        <li>отправить сообщение через форму обратной связи.</li>
+    </ul>
+    <div class="actions">
+        <a class="button" href="{{ url_for('public.home') }}">На главную</a>
+        <a class="button secondary" href="{{ url_for('public.static_page', page_slug='help') }}">Справка</a>
+    </div>
+</section>
+{% endblock %}

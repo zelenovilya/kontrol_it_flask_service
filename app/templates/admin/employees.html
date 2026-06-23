@@ -1,2 +1,60 @@
 {% extends "base.html" %}
-{% block content %}<h1>Сотрудники</h1><table><thead><tr><th>ФИО</th><th>Должность</th><th>Подразделение</th><th>Квалификация</th></tr></thead><tbody>{% for employee in employees %}<tr><td>{{ employee.user.full_name }}</td><td>{{ employee.position }}</td><td>{{ employee.department }}</td><td>{{ employee.qualification }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Сотрудники{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Сотрудники</h1>
+    <p class="lead">
+        Сотрудники со связанной ролью специалиста могут получать заявки, менять статусы
+        и формировать документы по выполненным работам.
+    </p>
+</section>
+
+<section class="cards">
+    <article class="card">
+        <h2>Назначение специалиста</h2>
+        <p>
+            Исполнитель привязывается к заявке в карточке обращения. После назначения
+            заявка появляется в рабочем кабинете специалиста.
+        </p>
+    </article>
+    <article class="card">
+        <h2>Квалификация</h2>
+        <p>
+            Поля должности, подразделения и квалификации помогают понять, кому лучше
+            передать обращение клиента.
+        </p>
+    </article>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>ФИО</th>
+        <th>Должность</th>
+        <th>Подразделение</th>
+        <th>Квалификация</th>
+        <th>Email</th>
+        <th>Назначено заявок</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for employee in employees %}
+        <tr>
+            <td>{{ employee.user.full_name }}</td>
+            <td>{{ employee.position }}</td>
+            <td>{{ employee.department }}</td>
+            <td>{{ employee.qualification or 'Не указана' }}</td>
+            <td>{{ employee.user.email }}</td>
+            <td>{{ employee.assigned_tickets|length }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6">Сотрудники пока не добавлены.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

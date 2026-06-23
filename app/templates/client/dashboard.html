@@ -1,11 +1,56 @@
 {% extends "base.html" %}
+
+{% block title %}Панель клиента{% endblock %}
+
 {% block content %}
-<h1>Панель клиента</h1>
-<div class="dashboard-grid">
-    <div class="metric"><span>{{ tickets|length }}</span><p>Всего заявок</p></div>
-    <div class="metric"><span>{{ tickets|selectattr('status.name', 'equalto', 'В работе')|list|length }}</span><p>В работе</p></div>
-    <div class="metric"><span>{{ tickets|selectattr('status.name', 'equalto', 'Выполнена')|list|length }}</span><p>Выполнено</p></div>
+<section class="page-header">
+    <p class="eyebrow">Личный кабинет клиента</p>
+    <h1>Панель клиента</h1>
+    <p class="lead">
+        Здесь отображается краткая статистика по обращениям организации и быстрый переход
+        к созданию новой заявки.
+    </p>
+</section>
+
+<section class="dashboard-grid">
+    <div class="metric">
+        <span>{{ tickets|length }}</span>
+        <p>всего заявок</p>
+    </div>
+    <div class="metric">
+        <span>{{ tickets|selectattr('status.name', 'equalto', 'В работе')|list|length }}</span>
+        <p>в работе</p>
+    </div>
+    <div class="metric">
+        <span>{{ tickets|selectattr('status.name', 'equalto', 'Выполнена')|list|length }}</span>
+        <p>выполнено</p>
+    </div>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Что можно сделать</h2>
+        <ul class="clean-list">
+            <li>создать новую заявку на ИТ-обслуживание;</li>
+            <li>открыть историю своих обращений;</li>
+            <li>добавить комментарий в карточке заявки;</li>
+            <li>посмотреть и скачать документы по выполненным работам.</li>
+        </ul>
+    </article>
+    <article class="info-box">
+        <h2>Рекомендация</h2>
+        <p>
+            Для ускорения обработки указывайте понятную тему, выбирайте подходящую услугу
+            и прикладывайте файл, если ошибка отображается на экране.
+        </p>
+    </article>
+</section>
+
+<div class="actions">
+    <a class="button" href="{{ url_for('client.create_ticket') }}">Создать заявку</a>
+    <a class="button secondary" href="{{ url_for('client.tickets') }}">Все мои заявки</a>
+    <a class="button secondary" href="{{ url_for('client.documents') }}">Документы</a>
 </div>
-<div class="actions"><a class="button" href="{{ url_for('client.create_ticket') }}">Создать заявку</a></div>
+
 {% include "client/_tickets_table.html" %}
 {% endblock %}

@@ -1,7 +1,18 @@
 {% extends "base.html" %}
+
+{% block title %}Административная панель{% endblock %}
+
 {% block content %}
-<h1>Административная панель</h1>
-<div class="admin-menu">
+<section class="page-header">
+    <p class="eyebrow">Закрытый раздел</p>
+    <h1>Административная панель</h1>
+    <p class="lead">
+        Центр управления пользователями, справочниками, заявками, публичными материалами,
+        обратной связью и отчетами веб-сервиса.
+    </p>
+</section>
+
+<nav class="admin-menu" aria-label="Разделы администратора">
     <a href="{{ url_for('admin.users') }}">Пользователи</a>
     <a href="{{ url_for('admin.roles') }}">Роли и права</a>
     <a href="{{ url_for('admin.clients') }}">Клиенты</a>
@@ -12,8 +23,56 @@
     <a href="{{ url_for('admin.articles') }}">Новости и база знаний</a>
     <a href="{{ url_for('admin.feedback') }}">Обратная связь</a>
     <a href="{{ url_for('admin.reports') }}">Отчеты</a>
-</div>
-<div class="dashboard-grid">
-    {% for name, value in stats.items() %}<div class="metric"><span>{{ value }}</span><p>{{ name }}</p></div>{% endfor %}
-</div>
+</nav>
+
+<section class="dashboard-grid">
+    <div class="metric">
+        <span>{{ stats.users }}</span>
+        <p>пользователей</p>
+    </div>
+    <div class="metric">
+        <span>{{ stats.clients }}</span>
+        <p>клиентов</p>
+    </div>
+    <div class="metric">
+        <span>{{ stats.employees }}</span>
+        <p>сотрудников</p>
+    </div>
+    <div class="metric">
+        <span>{{ stats.tickets }}</span>
+        <p>заявок</p>
+    </div>
+    <div class="metric">
+        <span>{{ stats.services }}</span>
+        <p>услуг</p>
+    </div>
+    <div class="metric">
+        <span>{{ stats.feedback }}</span>
+        <p>новых сообщений</p>
+    </div>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Контроль заявок</h2>
+        <p>
+            Администратор видит общую очередь обращений, назначает специалистов,
+            проверяет статусы и контролирует наличие комментариев, файлов и документов.
+        </p>
+    </article>
+    <article class="info-box">
+        <h2>Справочники</h2>
+        <p>
+            Для корректной работы заявок поддерживаются справочники ролей, услуг,
+            категорий, статусов и приоритетов. Они помогают структурировать обслуживание.
+        </p>
+    </article>
+    <article class="info-box">
+        <h2>Публичный контент</h2>
+        <p>
+            Через административный раздел публикуются новости и материалы базы знаний,
+            которые затем отображаются на открытых страницах сайта.
+        </p>
+    </article>
+</section>
 {% endblock %}

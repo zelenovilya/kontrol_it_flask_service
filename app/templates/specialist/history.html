@@ -1,26 +1,63 @@
 {% extends "base.html" %}
+
+{% block title %}История заявки №{{ ticket.id }}{% endblock %}
+
 {% block content %}
-<h1>История работ по заявке №{{ ticket.id }}</h1>
-<div class="info-box">
-    <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
-    <p><b>Тема:</b> {{ ticket.title }}</p>
-    <p><b>Текущий статус:</b> {{ ticket.status.name }}</p>
-</div>
-<h2>Комментарии</h2>
-{% for comment in ticket.comments %}
-<div class="comment"><b>{{ comment.author.full_name }}</b> <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span><p>{{ comment.text }}</p></div>
-{% else %}
-<p>Комментарии пока не добавлены.</p>
-{% endfor %}
-<h2>Прикрепленные файлы</h2>
-<table>
-    <thead><tr><th>Файл</th><th>Кто загрузил</th><th>Дата</th></tr></thead>
-    <tbody>
-    {% for file in ticket.attachments %}
-        <tr><td>{{ file.original_name }}</td><td>{{ file.uploaded_by.full_name }}</td><td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td></tr>
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>История работ по заявке №{{ ticket.id }}</h1>
+    <p class="lead">{{ ticket.title }}</p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Текущие параметры</h2>
+        <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
+        <p><b>Текущий статус:</b> {{ ticket.status.name }}</p>
+        <p><b>Исполнитель:</b> {{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</p>
+    </article>
+    <article class="info-box">
+        <h2>Описание заявки</h2>
+        <p>{{ ticket.description }}</p>
+    </article>
+</section>
+
+<section>
+    <h2>Комментарии</h2>
+    {% for comment in ticket.comments %}
+        <div class="comment">
+            <b>{{ comment.author.full_name }}</b>
+            <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            <p>{{ comment.text }}</p>
+        </div>
     {% else %}
-        <tr><td colspan="3">Файлы пока не прикреплены.</td></tr>
+        <p class="muted">Комментарии пока не добавлены.</p>
     {% endfor %}
-    </tbody>
-</table>
+</section>
+
+<section>
+    <h2>Прикрепленные файлы</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Файл</th>
+            <th>Кто загрузил</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in ticket.attachments %}
+            <tr>
+                <td>{{ file.original_name }}</td>
+                <td>{{ file.uploaded_by.full_name }}</td>
+                <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Файлы пока не прикреплены.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

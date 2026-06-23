@@ -1,9 +1,40 @@
 {% extends "base.html" %}
+
+{% block title %}Панель специалиста{% endblock %}
+
 {% block content %}
-<h1>Панель специалиста</h1>
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>Панель специалиста</h1>
+    <p class="lead">
+        Рабочее место исполнителя: назначенные заявки, новые обращения, история работ,
+        формирование актов и отчетов.
+    </p>
+</section>
+
 <div class="actions">
     <a class="button" href="{{ url_for('specialist.new_tickets') }}">Новые заявки</a>
     <a class="button secondary" href="{{ url_for('specialist.reports') }}">Отчет по выполненным заявкам</a>
 </div>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Порядок обработки</h2>
+        <ul class="clean-list">
+            <li>откройте назначенную заявку;</li>
+            <li>уточните описание и приложенные файлы;</li>
+            <li>измените статус и добавьте комментарий;</li>
+            <li>после выполнения сформируйте акт DOCX.</li>
+        </ul>
+    </article>
+    <article class="info-box">
+        <h2>Ответственность</h2>
+        <p>
+            Специалист работает с обращениями клиентов и фиксирует результат так,
+            чтобы администратор и клиент видели историю выполнения.
+        </p>
+    </article>
+</section>
+
 {% include "specialist/_tickets_table.html" %}
 {% endblock %}

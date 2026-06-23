@@ -1,12 +1,40 @@
 {% extends "base.html" %}
+
+{% block title %}Документы{% endblock %}
+
 {% block content %}
-<h1>Документы</h1>
+<section class="page-header">
+    <p class="eyebrow">Личный кабинет клиента</p>
+    <h1>Документы</h1>
+    <p class="lead">
+        Акты и другие документы по заявкам вашей организации доступны для скачивания после формирования.
+    </p>
+</section>
+
 <table>
-    <thead><tr><th>Документ</th><th>Заявка</th><th>Дата</th><th>Скачать</th></tr></thead>
+    <thead>
+    <tr>
+        <th>Документ</th>
+        <th>Тип</th>
+        <th>Заявка</th>
+        <th>Дата</th>
+        <th>Скачать</th>
+    </tr>
+    </thead>
     <tbody>
     {% for doc in documents %}
-    <tr><td>{{ doc.title }}</td><td>№{{ doc.ticket.id }}</td><td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td><td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td></tr>
-    {% else %}<tr><td colspan="4">Документы отсутствуют.</td></tr>{% endfor %}
+        <tr>
+            <td>{{ doc.title }}</td>
+            <td>{{ doc.document_type }}</td>
+            <td>№{{ doc.ticket.id }} — {{ doc.ticket.title }}</td>
+            <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
+            <td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">Документы отсутствуют. Они появятся после формирования специалистом.</td>
+        </tr>
+    {% endfor %}
     </tbody>
 </table>
 {% endblock %}

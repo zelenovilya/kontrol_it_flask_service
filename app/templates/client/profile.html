@@ -1,11 +1,50 @@
 {% extends "base.html" %}
+
+{% block title %}Профиль клиента{% endblock %}
+
 {% block content %}
-<h1>Профиль клиента</h1>
-<div class="info-box">
-    <p><b>Организация:</b> {{ client.organization_name }}</p>
-    <p><b>ИНН:</b> {{ client.inn or 'Не указан' }}</p>
-    <p><b>Контактное лицо:</b> {{ client.contact_person }}</p>
-    <p><b>Email:</b> {{ client.user.email }}</p>
-    <p><b>Телефон:</b> {{ client.user.phone or 'Не указан' }}</p>
-</div>
+<section class="page-header">
+    <p class="eyebrow">Личный кабинет клиента</p>
+    <h1>Профиль клиента</h1>
+    <p class="lead">
+        Данные организации и контактного лица используются для связи с клиентом и привязки заявок.
+    </p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Организация</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Название</dt>
+                <dd>{{ client.organization_name }}</dd>
+            </div>
+            <div>
+                <dt>ИНН</dt>
+                <dd>{{ client.inn or 'Не указан' }}</dd>
+            </div>
+            <div>
+                <dt>Адрес</dt>
+                <dd>{{ client.address or 'Не указан' }}</dd>
+            </div>
+        </dl>
+    </article>
+    <article class="info-box">
+        <h2>Контактное лицо</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>ФИО</dt>
+                <dd>{{ client.contact_person or client.user.full_name }}</dd>
+            </div>
+            <div>
+                <dt>Email</dt>
+                <dd>{{ client.user.email }}</dd>
+            </div>
+            <div>
+                <dt>Телефон</dt>
+                <dd>{{ client.user.phone or 'Не указан' }}</dd>
+            </div>
+        </dl>
+    </article>
+</section>
 {% endblock %}

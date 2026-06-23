@@ -1,2 +1,52 @@
 {% extends "base.html" %}
-{% block content %}<h1>Обратная связь</h1><table><thead><tr><th>Дата</th><th>Отправитель</th><th>Тема</th><th>Статус</th><th>Действие</th></tr></thead><tbody>{% for message in messages %}<tr><td>{{ message.created_at.strftime('%d.%m.%Y') }}</td><td>{{ message.name }}<br>{{ message.email }}</td><td>{{ message.subject }}</td><td>{{ 'Обработано' if message.is_processed else 'Новое' }}</td><td>{% if not message.is_processed %}<a href="{{ url_for('admin.mark_feedback_processed', message_id=message.id) }}">Отметить</a>{% endif %}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Обратная связь{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Администрирование</p>
+    <h1>Обратная связь</h1>
+    <p class="lead">
+        Сообщения, отправленные через публичную форму контактов, попадают в этот раздел.
+    </p>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Дата</th>
+        <th>Отправитель</th>
+        <th>Тема</th>
+        <th>Сообщение</th>
+        <th>Статус</th>
+        <th>Действие</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for message in messages %}
+        <tr>
+            <td>{{ message.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+                <b>{{ message.name }}</b><br>
+                {{ message.email }}<br>
+                {{ message.phone or 'Телефон не указан' }}
+            </td>
+            <td>{{ message.subject }}</td>
+            <td>{{ message.message }}</td>
+            <td>{{ 'Обработано' if message.is_processed else 'Новое' }}</td>
+            <td>
+                {% if not message.is_processed %}
+                    <a href="{{ url_for('admin.mark_feedback_processed', message_id=message.id) }}">Отметить обработанным</a>
+                {% else %}
+                    <span class="muted">Действий нет</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="6">Сообщений обратной связи пока нет.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

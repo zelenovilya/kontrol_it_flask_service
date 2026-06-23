@@ -1,6 +1,20 @@
 {% extends "base.html" %}
+
+{% block title %}Мои заявки{% endblock %}
+
 {% block content %}
-<h1>Мои заявки</h1>
-<div class="actions"><a class="button" href="{{ url_for('client.create_ticket') }}">Новая заявка</a></div>
+<section class="page-header">
+    <p class="eyebrow">Личный кабинет клиента</p>
+    <h1>Мои заявки</h1>
+    <p class="lead">
+        Список всех обращений вашей организации с текущими статусами, услугами и исполнителями.
+    </p>
+</section>
+
+<div class="actions">
+    <a class="button" href="{{ url_for('client.create_ticket') }}">Новая заявка</a>
+    <a class="button secondary" href="{{ url_for('client.dashboard') }}">Вернуться в кабинет</a>
+</div>
+
 {% include "client/_tickets_table.html" %}
 {% endblock %}

@@ -1,17 +1,32 @@
 <table>
-    <thead><tr><th>№</th><th>Дата</th><th>Тема</th><th>Услуга</th><th>Статус</th><th>Действие</th></tr></thead>
+    <thead>
+    <tr>
+        <th>№</th>
+        <th>Дата</th>
+        <th>Тема</th>
+        <th>Услуга</th>
+        <th>Статус</th>
+        <th>Приоритет</th>
+        <th>Исполнитель</th>
+        <th>Открыть</th>
+    </tr>
+    </thead>
     <tbody>
     {% for ticket in tickets %}
         <tr>
-            <td>{{ ticket.id }}</td>
+            <td>№{{ ticket.id }}</td>
             <td>{{ ticket.created_at.strftime('%d.%m.%Y') }}</td>
             <td>{{ ticket.title }}</td>
             <td>{{ ticket.service.name }}</td>
             <td>{{ ticket.status.name }}</td>
+            <td>{{ ticket.priority.name }}</td>
+            <td>{{ ticket.specialist.user.full_name if ticket.specialist else 'Не назначен' }}</td>
             <td><a href="{{ url_for('client.ticket_detail', ticket_id=ticket.id) }}">Открыть</a></td>
         </tr>
     {% else %}
-        <tr><td colspan="6">Заявки отсутствуют.</td></tr>
+        <tr>
+            <td colspan="8">Заявки отсутствуют. Создайте первое обращение через форму.</td>
+        </tr>
     {% endfor %}
     </tbody>
 </table>

@@ -1,30 +1,113 @@
 {% extends "base.html" %}
+
+{% block title %}Заявка №{{ ticket.id }}{% endblock %}
+
 {% block content %}
-<h1>Заявка №{{ ticket.id }}</h1>
-<div class="info-box">
-    <p><b>Клиент:</b> {{ ticket.client.organization_name }}</p>
-    <p><b>Тема:</b> {{ ticket.title }}</p>
-    <p><b>Описание:</b> {{ ticket.description }}</p>
-</div>
+<section class="page-header">
+    <p class="eyebrow">Кабинет специалиста</p>
+    <h1>Заявка №{{ ticket.id }}</h1>
+    <p class="lead">{{ ticket.title }}</p>
+</section>
+
+<section class="section-grid">
+    <article class="info-box">
+        <h2>Клиент и услуга</h2>
+        <dl class="meta-list">
+            <div>
+                <dt>Клиент</dt>
+                <dd>{{ ticket.client.organization_name }}</dd>
+            </div>
+            <div>
+                <dt>Контакт</dt>
+                <dd>{{ ticket.client.contact_person or ticket.client.user.full_name }}</dd>
+            </div>
+            <div>
+                <dt>Услуга</dt>
+                <dd>{{ ticket.service.name }}</dd>
+            </div>
+            <div>
+                <dt>Приоритет</dt>
+                <dd>{{ ticket.priority.name }}</dd>
+            </div>
+        </dl>
+    </article>
+    <article class="info-box">
+        <h2>Описание</h2>
+        <p>{{ ticket.description }}</p>
+    </article>
+</section>
+
 <form method="post" enctype="multipart/form-data" class="form-card">
-    <label>Статус
+    <label>
+        Статус
         <select name="status_id">
-            {% for status in statuses %}<option value="{{ status.id }}" {% if ticket.status_id == status.id %}selected{% endif %}>{{ status.name }}</option>{% endfor %}
+            {% for status in statuses %}
+                <option value="{{ status.id }}" {% if ticket.status_id == status.id %}selected{% endif %}>{{ status.name }}</option>
+            {% endfor %}
         </select>
     </label>
-    <label>Исполнитель
+    <label>
+        Исполнитель
         <select name="specialist_id">
-            {% for specialist in specialists %}<option value="{{ specialist.id }}" {% if ticket.specialist_id == specialist.id %}selected{% endif %}>{{ specialist.user.full_name }}</option>{% endfor %}
+            {% for specialist in specialists %}
+                <option value="{{ specialist.id }}" {% if ticket.specialist_id == specialist.id %}selected{% endif %}>
+                    {{ specialist.user.full_name }}
+                </option>
+            {% endfor %}
         </select>
     </label>
-    <label>Комментарий<textarea name="comment"></textarea></label>
-    <label>Файл<input type="file" name="file"></label>
+    <label>
+        Комментарий
+        <textarea name="comment"></textarea>
+    </label>
+    <label>
+        Файл
+        <input type="file" name="file">
+    </label>
     <button type="submit">Сохранить изменения</button>
 </form>
+
 <div class="actions">
     <a class="button secondary" href="{{ url_for('specialist.ticket_history', ticket_id=ticket.id) }}">История работ</a>
     <a class="button" href="{{ url_for('specialist.act_page', ticket_id=ticket.id) }}">Формирование акта</a>
 </div>
-<h2>История комментариев</h2>
-{% for comment in ticket.comments %}<div class="comment"><b>{{ comment.author.full_name }}</b><p>{{ comment.text }}</p></div>{% endfor %}
+
+<section>
+    <h2>История комментариев</h2>
+    {% for comment in ticket.comments %}
+        <div class="comment">
+            <b>{{ comment.author.full_name }}</b>
+            <span>{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+            <p>{{ comment.text }}</p>
+        </div>
+    {% else %}
+        <p class="muted">Комментарии пока не добавлены.</p>
+    {% endfor %}
+</section>
+
+<section>
+    <h2>Файлы заявки</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Файл</th>
+            <th>Кто загрузил</th>
+            <th>Дата</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for file in ticket.attachments %}
+            <tr>
+                <td>{{ file.original_name }}</td>
+                <td>{{ file.uploaded_by.full_name }}</td>
+                <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">Файлы пока не прикреплены.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</section>
 {% endblock %}

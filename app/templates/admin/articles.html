@@ -1,2 +1,76 @@
 {% extends "base.html" %}
-{% block content %}<h1>Новости и база знаний</h1><form method="post" class="form-card"><label>Название<input name="title" required></label><label>Адрес slug<input name="slug" required></label><label>Краткое описание<input name="summary"></label><label>Тип<select name="article_type"><option value="knowledge">База знаний</option><option value="news">Новость</option></select></label><label>Текст<textarea name="content" required></textarea></label><button>Добавить</button></form><table><thead><tr><th>Название</th><th>Тип</th><th>Опубликовано</th></tr></thead><tbody>{% for article in articles %}<tr><td>{{ article.title }}</td><td>{{ article.article_type }}</td><td>{{ 'Да' if article.is_published else 'Нет' }}</td></tr>{% endfor %}</tbody></table>{% endblock %}
+
+{% block title %}Новости и база знаний{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <p class="eyebrow">Публичные материалы</p>
+    <h1>Новости и база знаний</h1>
+    <p class="lead">
+        Администратор добавляет инструкции и новости, которые отображаются в открытой части сайта.
+    </p>
+</section>
+
+<section class="section-grid">
+    <form method="post" class="form-card">
+        <label>
+            Название
+            <input name="title" required>
+        </label>
+        <label>
+            Адрес slug
+            <input name="slug" required>
+        </label>
+        <label>
+            Краткое описание
+            <input name="summary">
+        </label>
+        <label>
+            Тип
+            <select name="article_type">
+                <option value="knowledge">База знаний</option>
+                <option value="news">Новость</option>
+            </select>
+        </label>
+        <label>
+            Текст
+            <textarea name="content" required></textarea>
+        </label>
+        <button>Добавить</button>
+    </form>
+    <aside class="info-box">
+        <h2>Что публиковать</h2>
+        <p>
+            В базе знаний удобно размещать инструкции по созданию заявок, работе с файлами,
+            статусам и документам. В новостях можно фиксировать изменения сервиса.
+        </p>
+    </aside>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Краткое описание</th>
+        <th>Дата</th>
+        <th>Опубликовано</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for article in articles %}
+        <tr>
+            <td>{{ article.title }}</td>
+            <td>{{ "База знаний" if article.article_type == "knowledge" else "Новость" }}</td>
+            <td>{{ article.summary or 'Без описания' }}</td>
+            <td>{{ article.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>{{ 'Да' if article.is_published else 'Нет' }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">Материалы пока не добавлены.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
