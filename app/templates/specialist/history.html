@@ -43,6 +43,7 @@
             <th>Файл</th>
             <th>Кто загрузил</th>
             <th>Дата</th>
+            <th>Скачать</th>
         </tr>
         </thead>
         <tbody>
@@ -51,10 +52,11 @@
                 <td>{{ file.original_name }}</td>
                 <td>{{ file.uploaded_by.full_name }}</td>
                 <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td><a class="button small" href="{{ url_for('downloads.attachment', attachment_id=file.id) }}">Скачать файл</a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">Файлы пока не прикреплены.</td>
+                <td colspan="4">Файлы пока не прикреплены.</td>
             </tr>
         {% endfor %}
         </tbody>

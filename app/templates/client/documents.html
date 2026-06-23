@@ -28,7 +28,7 @@
             <td>{{ doc.document_type }}</td>
             <td>№{{ doc.ticket.id }} — {{ doc.ticket.title }}</td>
             <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
-            <td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td>
+            <td><a class="button small" href="{{ url_for('downloads.document', document_id=doc.id) }}">Скачать</a></td>
         </tr>
     {% else %}
         <tr>

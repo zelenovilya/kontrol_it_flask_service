@@ -28,10 +28,12 @@ def create_app(config_overrides=None):
     from app.routes.client import client_bp
     from app.routes.specialist import specialist_bp
     from app.routes.admin import admin_bp
+    from app.routes.downloads import downloads_bp
 
     app.register_blueprint(public_bp)
     app.register_blueprint(client_bp)
     app.register_blueprint(specialist_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(downloads_bp)
 
     return app

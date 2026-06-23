@@ -70,6 +70,7 @@
             <th>Файл</th>
             <th>Кто загрузил</th>
             <th>Дата загрузки</th>
+            <th>Скачать</th>
         </tr>
         </thead>
         <tbody>
@@ -78,10 +79,11 @@
                 <td>{{ file.original_name }}</td>
                 <td>{{ file.uploaded_by.full_name }}</td>
                 <td>{{ file.uploaded_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td><a class="button small" href="{{ url_for('downloads.attachment', attachment_id=file.id) }}">Скачать файл</a></td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">Файлы к заявке пока не прикреплены.</td>
+                <td colspan="4">Файлы к заявке пока не прикреплены.</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -105,7 +107,7 @@
                 <td>{{ doc.title }}</td>
                 <td>{{ doc.document_type }}</td>
                 <td>{{ doc.created_at.strftime('%d.%m.%Y') }}</td>
-                <td><a href="{{ url_for('client.download_document', document_id=doc.id) }}">Скачать</a></td>
+                <td><a href="{{ url_for('downloads.document', document_id=doc.id) }}">Скачать</a></td>
             </tr>
         {% else %}
             <tr>
