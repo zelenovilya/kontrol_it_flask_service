@@ -7,9 +7,12 @@ instance/
 .env
 .DS_Store
 data/*.db
+!data/kontrol_it.db
 uploads/*
 !uploads/.gitkeep
+!uploads/sample_ticket_*.txt
 generated/documents/*
 !generated/documents/.gitkeep
+!generated/documents/sample_act_ticket_*.docx
 generated/reports/*
 !generated/reports/.gitkeep
