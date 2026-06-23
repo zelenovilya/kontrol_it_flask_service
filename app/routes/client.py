@@ -8,13 +8,28 @@ from app.utils import save_uploaded_file
 client_bp = Blueprint("client", __name__, url_prefix="/client")
 
 
+def client_breadcrumbs(*items):
+    trail = [{"label": "Главная", "url": url_for("public.home")}]
+    if items:
+        trail.append({"label": "Личный кабинет клиента", "url": url_for("client.dashboard")})
+        trail.extend(items)
+    else:
+        trail.append({"label": "Личный кабинет клиента", "url": None})
+    return trail
+
+
 @client_bp.route("/dashboard")
 @login_required
 @role_required("Клиент")
 def dashboard():
     client = current_user.client
     tickets = Ticket.query.filter_by(client=client).order_by(Ticket.created_at.desc()).all()
-    return render_template("client/dashboard.html", title="Панель клиента", tickets=tickets)
+    return render_template(
+        "client/dashboard.html",
+        title="Панель клиента",
+        tickets=tickets,
+        breadcrumbs=client_breadcrumbs(),
+    )
 
 
 @client_bp.route("/tickets")
@@ -22,7 +37,12 @@ def dashboard():
 @role_required("Клиент")
 def tickets():
     tickets_list = Ticket.query.filter_by(client=current_user.client).order_by(Ticket.created_at.desc()).all()
-    return render_template("client/tickets.html", title="Мои заявки", tickets=tickets_list)
+    return render_template(
+        "client/tickets.html",
+        title="Мои заявки",
+        tickets=tickets_list,
+        breadcrumbs=client_breadcrumbs({"label": "Мои заявки", "url": None}),
+    )
 
 
 @client_bp.route("/tickets/create", methods=["GET", "POST"])
@@ -51,7 +71,13 @@ def create_ticket():
         db.session.commit()
         flash("Заявка создана и передана в обработку.", "success")
         return redirect(url_for("client.ticket_detail", ticket_id=ticket.id))
-    return render_template("client/create_ticket.html", title="Создать заявку", services=services, priorities=priorities)
+    return render_template(
+        "client/create_ticket.html",
+        title="Создать заявку",
+        services=services,
+        priorities=priorities,
+        breadcrumbs=client_breadcrumbs({"label": "Создание заявки", "url": None}),
+    )
 
 
 @client_bp.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
@@ -68,7 +94,15 @@ def ticket_detail(ticket_id):
             db.session.commit()
             flash("Комментарий добавлен.", "success")
         return redirect(url_for("client.ticket_detail", ticket_id=ticket.id))
-    return render_template("client/ticket_detail.html", title=f"Заявка №{ticket.id}", ticket=ticket)
+    return render_template(
+        "client/ticket_detail.html",
+        title=f"Заявка №{ticket.id}",
+        ticket=ticket,
+        breadcrumbs=client_breadcrumbs(
+            {"label": "Мои заявки", "url": url_for("client.tickets")},
+            {"label": f"Заявка №{ticket.id}", "url": None},
+        ),
+    )
 
 
 @client_bp.route("/documents")
@@ -76,7 +110,12 @@ def ticket_detail(ticket_id):
 @role_required("Клиент")
 def documents():
     docs = Document.query.join(Ticket).filter(Ticket.client_id == current_user.client.id).order_by(Document.created_at.desc()).all()
-    return render_template("client/documents.html", title="Документы", documents=docs)
+    return render_template(
+        "client/documents.html",
+        title="Документы",
+        documents=docs,
+        breadcrumbs=client_breadcrumbs({"label": "Документы", "url": None}),
+    )
 
 
 @client_bp.route("/documents/<int:document_id>/download")
@@ -93,4 +132,9 @@ def download_document(document_id):
 @login_required
 @role_required("Клиент")
 def profile():
-    return render_template("client/profile.html", title="Профиль клиента", client=current_user.client)
+    return render_template(
+        "client/profile.html",
+        title="Профиль клиента",
+        client=current_user.client,
+        breadcrumbs=client_breadcrumbs({"label": "Профиль", "url": None}),
+    )

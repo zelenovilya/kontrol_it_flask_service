@@ -13,6 +13,16 @@ from app.models import (
 admin_bp = Blueprint("admin", __name__, url_prefix="/admin")
 
 
+def admin_breadcrumbs(*items):
+    trail = [{"label": "Главная", "url": url_for("public.home")}]
+    if items:
+        trail.append({"label": "Панель администратора", "url": url_for("admin.dashboard")})
+        trail.extend(items)
+    else:
+        trail.append({"label": "Панель администратора", "url": None})
+    return trail
+
+
 @admin_bp.route("/dashboard")
 @login_required
 @role_required("Администратор")
@@ -25,7 +35,12 @@ def dashboard():
         "services": Service.query.count(),
         "feedback": FeedbackMessage.query.filter_by(is_processed=False).count(),
     }
-    return render_template("admin/dashboard.html", title="Административная панель", stats=stats)
+    return render_template(
+        "admin/dashboard.html",
+        title="Административная панель",
+        stats=stats,
+        breadcrumbs=admin_breadcrumbs(),
+    )
 
 
 @admin_bp.route("/users", methods=["GET", "POST"])
@@ -46,7 +61,13 @@ def users():
         db.session.commit()
         flash("Пользователь добавлен.", "success")
         return redirect(url_for("admin.users"))
-    return render_template("admin/users.html", title="Пользователи", users=User.query.all(), roles=roles)
+    return render_template(
+        "admin/users.html",
+        title="Пользователи",
+        users=User.query.all(),
+        roles=roles,
+        breadcrumbs=admin_breadcrumbs({"label": "Пользователи", "url": None}),
+    )
 
 
 @admin_bp.route("/users/<int:user_id>/edit", methods=["GET", "POST"])
@@ -68,7 +89,16 @@ def edit_user(user_id):
         db.session.commit()
         flash("Данные пользователя обновлены.", "success")
         return redirect(url_for("admin.users"))
-    return render_template("admin/user_edit.html", title="Редактирование пользователя", user=user, roles=roles)
+    return render_template(
+        "admin/user_edit.html",
+        title="Редактирование пользователя",
+        user=user,
+        roles=roles,
+        breadcrumbs=admin_breadcrumbs(
+            {"label": "Пользователи", "url": url_for("admin.users")},
+            {"label": f"Редактирование {user.username}", "url": None},
+        ),
+    )
 
 
 @admin_bp.route("/users/<int:user_id>/toggle-active")
@@ -104,21 +134,37 @@ def roles():
         "Специалист": "Просмотр новых и назначенных заявок, смена статусов, комментарии, файлы, акты и Excel-отчеты.",
         "Клиент": "Создание заявок, просмотр своих обращений, комментарии, профиль и скачивание документов.",
     }
-    return render_template("admin/roles.html", title="Роли и права доступа", roles=Role.query.all(), permissions=permissions)
+    return render_template(
+        "admin/roles.html",
+        title="Роли и права доступа",
+        roles=Role.query.all(),
+        permissions=permissions,
+        breadcrumbs=admin_breadcrumbs({"label": "Роли", "url": None}),
+    )
 
 
 @admin_bp.route("/clients")
 @login_required
 @role_required("Администратор")
 def clients():
-    return render_template("admin/clients.html", title="Клиенты", clients=Client.query.all())
+    return render_template(
+        "admin/clients.html",
+        title="Клиенты",
+        clients=Client.query.all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Клиенты", "url": None}),
+    )
 
 
 @admin_bp.route("/employees")
 @login_required
 @role_required("Администратор")
 def employees():
-    return render_template("admin/employees.html", title="Сотрудники", employees=Employee.query.all())
+    return render_template(
+        "admin/employees.html",
+        title="Сотрудники",
+        employees=Employee.query.all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Сотрудники", "url": None}),
+    )
 
 
 @admin_bp.route("/services", methods=["GET", "POST"])
@@ -137,14 +183,25 @@ def services():
         db.session.commit()
         flash("Услуга добавлена.", "success")
         return redirect(url_for("admin.services"))
-    return render_template("admin/services.html", title="Услуги", services=Service.query.all(), categories=categories)
+    return render_template(
+        "admin/services.html",
+        title="Услуги",
+        services=Service.query.all(),
+        categories=categories,
+        breadcrumbs=admin_breadcrumbs({"label": "Услуги", "url": None}),
+    )
 
 
 @admin_bp.route("/tickets")
 @login_required
 @role_required("Администратор")
 def tickets():
-    return render_template("admin/tickets.html", title="Заявки", tickets=Ticket.query.order_by(Ticket.created_at.desc()).all())
+    return render_template(
+        "admin/tickets.html",
+        title="Заявки",
+        tickets=Ticket.query.order_by(Ticket.created_at.desc()).all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Заявки", "url": None}),
+    )
 
 
 @admin_bp.route("/statuses", methods=["GET", "POST"])
@@ -157,7 +214,12 @@ def statuses():
         db.session.commit()
         flash("Статус добавлен.", "success")
         return redirect(url_for("admin.statuses"))
-    return render_template("admin/statuses.html", title="Статусы заявок", statuses=TicketStatus.query.order_by(TicketStatus.sort_order).all())
+    return render_template(
+        "admin/statuses.html",
+        title="Статусы заявок",
+        statuses=TicketStatus.query.order_by(TicketStatus.sort_order).all(),
+        breadcrumbs=admin_breadcrumbs({"label": "Статусы заявок", "url": None}),
+    )
 
 
 @admin_bp.route("/feedback")
@@ -165,7 +227,12 @@ def statuses():
 @role_required("Администратор")
 def feedback():
     messages = FeedbackMessage.query.order_by(FeedbackMessage.created_at.desc()).all()
-    return render_template("admin/feedback.html", title="Обратная связь", messages=messages)
+    return render_template(
+        "admin/feedback.html",
+        title="Обратная связь",
+        messages=messages,
+        breadcrumbs=admin_breadcrumbs({"label": "Обратная связь", "url": None}),
+    )
 
 
 @admin_bp.route("/feedback/<int:message_id>/processed")
@@ -195,7 +262,12 @@ def articles():
         db.session.commit()
         flash("Материал добавлен.", "success")
         return redirect(url_for("admin.articles"))
-    return render_template("admin/articles.html", title="Новости и база знаний", articles=Article.query.order_by(Article.created_at.desc()).all())
+    return render_template(
+        "admin/articles.html",
+        title="Новости и база знаний",
+        articles=Article.query.order_by(Article.created_at.desc()).all(),
+        breadcrumbs=admin_breadcrumbs({"label": "База знаний и новости", "url": None}),
+    )
 
 
 @admin_bp.route("/reports")
@@ -203,7 +275,12 @@ def articles():
 @role_required("Администратор")
 def reports():
     tickets_by_status = [(status.name, Ticket.query.filter_by(status=status).count()) for status in TicketStatus.query.order_by(TicketStatus.sort_order).all()]
-    return render_template("admin/reports.html", title="Отчеты", tickets_by_status=tickets_by_status)
+    return render_template(
+        "admin/reports.html",
+        title="Отчеты",
+        tickets_by_status=tickets_by_status,
+        breadcrumbs=admin_breadcrumbs({"label": "Отчеты", "url": None}),
+    )
 
 
 @admin_bp.route("/reports/tickets.xlsx")

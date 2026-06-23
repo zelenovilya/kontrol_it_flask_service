@@ -12,13 +12,28 @@ from app.utils import save_uploaded_file
 specialist_bp = Blueprint("specialist", __name__, url_prefix="/specialist")
 
 
+def specialist_breadcrumbs(*items):
+    trail = [{"label": "Главная", "url": url_for("public.home")}]
+    if items:
+        trail.append({"label": "Кабинет специалиста", "url": url_for("specialist.dashboard")})
+        trail.extend(items)
+    else:
+        trail.append({"label": "Кабинет специалиста", "url": None})
+    return trail
+
+
 @specialist_bp.route("/dashboard")
 @login_required
 @role_required("Специалист")
 def dashboard():
     employee = current_user.employee
     tickets = Ticket.query.filter_by(specialist=employee).order_by(Ticket.updated_at.desc()).all()
-    return render_template("specialist/dashboard.html", title="Панель специалиста", tickets=tickets)
+    return render_template(
+        "specialist/dashboard.html",
+        title="Панель специалиста",
+        tickets=tickets,
+        breadcrumbs=specialist_breadcrumbs(),
+    )
 
 
 @specialist_bp.route("/new-tickets")
@@ -27,7 +42,12 @@ def dashboard():
 def new_tickets():
     new_status = TicketStatus.query.filter_by(name="Новая").first()
     tickets = Ticket.query.filter_by(status=new_status).order_by(Ticket.created_at.asc()).all()
-    return render_template("specialist/new_tickets.html", title="Новые заявки", tickets=tickets)
+    return render_template(
+        "specialist/new_tickets.html",
+        title="Новые заявки",
+        tickets=tickets,
+        breadcrumbs=specialist_breadcrumbs({"label": "Новые заявки", "url": None}),
+    )
 
 
 @specialist_bp.route("/tickets/<int:ticket_id>", methods=["GET", "POST"])
@@ -51,7 +71,14 @@ def ticket_detail(ticket_id):
         db.session.commit()
         flash("Карточка заявки обновлена.", "success")
         return redirect(url_for("specialist.ticket_detail", ticket_id=ticket.id))
-    return render_template("specialist/ticket_detail.html", title=f"Заявка №{ticket.id}", ticket=ticket, statuses=statuses, specialists=specialists)
+    return render_template(
+        "specialist/ticket_detail.html",
+        title=f"Заявка №{ticket.id}",
+        ticket=ticket,
+        statuses=statuses,
+        specialists=specialists,
+        breadcrumbs=specialist_breadcrumbs({"label": f"Заявка №{ticket.id}", "url": None}),
+    )
 
 
 @specialist_bp.route("/tickets/<int:ticket_id>/history")
@@ -59,7 +86,15 @@ def ticket_detail(ticket_id):
 @role_required("Специалист")
 def ticket_history(ticket_id):
     ticket = Ticket.query.get_or_404(ticket_id)
-    return render_template("specialist/history.html", title=f"История заявки №{ticket.id}", ticket=ticket)
+    return render_template(
+        "specialist/history.html",
+        title=f"История заявки №{ticket.id}",
+        ticket=ticket,
+        breadcrumbs=specialist_breadcrumbs(
+            {"label": f"Заявка №{ticket.id}", "url": url_for("specialist.ticket_detail", ticket_id=ticket.id)},
+            {"label": "История работ", "url": None},
+        ),
+    )
 
 
 @specialist_bp.route("/tickets/<int:ticket_id>/act")
@@ -67,7 +102,15 @@ def ticket_history(ticket_id):
 @role_required("Специалист")
 def act_page(ticket_id):
     ticket = Ticket.query.get_or_404(ticket_id)
-    return render_template("specialist/act.html", title=f"Акт по заявке №{ticket.id}", ticket=ticket)
+    return render_template(
+        "specialist/act.html",
+        title=f"Акт по заявке №{ticket.id}",
+        ticket=ticket,
+        breadcrumbs=specialist_breadcrumbs(
+            {"label": f"Заявка №{ticket.id}", "url": url_for("specialist.ticket_detail", ticket_id=ticket.id)},
+            {"label": "Формирование акта", "url": None},
+        ),
+    )
 
 
 @specialist_bp.route("/tickets/<int:ticket_id>/generate-act")
@@ -107,7 +150,12 @@ def reports():
         Ticket.specialist == current_user.employee,
         Ticket.status_id.in_(completed_status_ids),
     ).order_by(Ticket.updated_at.desc()).all()
-    return render_template("specialist/reports.html", title="Отчет по выполненным заявкам", tickets=tickets)
+    return render_template(
+        "specialist/reports.html",
+        title="Отчет по выполненным заявкам",
+        tickets=tickets,
+        breadcrumbs=specialist_breadcrumbs({"label": "Отчетность", "url": None}),
+    )
 
 
 @specialist_bp.route("/reports/tickets.xlsx")
